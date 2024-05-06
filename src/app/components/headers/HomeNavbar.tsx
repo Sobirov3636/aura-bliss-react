@@ -59,8 +59,8 @@ function HomeNavbar() {
           <Box>
             <img className='makeup' src='/icons/makeup.svg' alt='' />
           </Box>
-          <Box>
-            <img className='marketing-image' src='/img/girlHijab.jpeg' alt='' />
+          <Box className='marketing-wrapper'>
+            <img className='marketing-image' src='/img/kores.png' alt='' />
           </Box>
           <Box>
             <img className='butterfly-icon' src='icons/butterfly.svg' alt='' />

@@ -1,7 +1,7 @@
 import React from "react";
 
 function HomePage() {
-  return <div>HomePage</div>;
+  return <div style={{ backgroundColor: "#fff", height: "50px" }}>HomePage</div>;
 }
 
 export default HomePage;
