@@ -50,7 +50,7 @@ function HomeNavbar() {
                 </Button>
               </Box>
             ) : (
-              <img />
+              <img className='user-avatar' src={"/icons/default-user.svg"} alt='userImage' aria-haspopup={"true"} />
             )}
           </Stack>
         </Stack>
