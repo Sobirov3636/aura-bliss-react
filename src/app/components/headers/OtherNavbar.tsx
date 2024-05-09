@@ -1,10 +1,11 @@
 import React from "react";
 import { Box, Button, Container, Stack } from "@mui/material";
 import { NavLink, useLocation } from "react-router-dom";
+import Basket from "./Basket";
 
 function OtherNavbar() {
   const location = useLocation();
-  const authMember = true;
+  const authMember = null;
   return (
     <div className='other-navbar'>
       <Container className='navbar-container'>
@@ -42,7 +43,7 @@ function OtherNavbar() {
                 Help
               </NavLink>
             </Box>
-            {/* BASKET */}
+            <Basket />
 
             {!authMember ? (
               <Box>

@@ -12,6 +12,7 @@ import HomeNavbar from "./components/headers/HomeNavbar";
 import OtherNavbar from "./components/headers/OtherNavbar";
 import "../css/app.css";
 import "../css/navbar.css";
+import "../css/footer.css";
 
 function App() {
   const location = useLocation();
