@@ -1,7 +1,7 @@
 import React from "react";
 
 function NewArrivals() {
-  return <div>NewArrivals</div>;
+  return <div style={{ backgroundColor: "orange" }}>NewArrivals</div>;
 }
 
 export default NewArrivals;
