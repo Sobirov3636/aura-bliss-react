@@ -9,9 +9,9 @@ function HomePage() {
   return (
     <div className='homepage'>
       <BestSellers />
-      <NewArrivals />
-      <Advertisement />
       <ProductCategories />
+      <Advertisement />
+      <NewArrivals />
       <Events />
     </div>
   );

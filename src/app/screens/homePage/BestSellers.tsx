@@ -19,9 +19,9 @@ const bestSellers = [
 
 function BestSellers() {
   return (
-    <div className='popular-dishes-frame'>
+    <div className='best-sellers-frame'>
       <Container>
-        <Stack className='popular-section'>
+        <Stack className='best-section'>
           <Box className='category-title'>Best Sellers</Box>
           <Stack className='cards-frame'>
             {bestSellers.length !== 0 ? (
@@ -56,7 +56,7 @@ function BestSellers() {
                 ))}
               </CssVarsProvider>
             ) : (
-              <Box className='no-data'>Popular products are not available!</Box>
+              <Box className='no-data'>Best Seller products are not available!</Box>
             )}
           </Stack>
         </Stack>
