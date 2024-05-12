@@ -85,13 +85,9 @@ export default function Events() {
           })}
         </Swiper>
         <Box className={"prev-next-frame"}>
-          <img src={"/icons/arrow-right.svg"} className={"swiper-button-prev"} />
+          <img src={"/icons/arrow-right.svg"} style={{ cursor: "pointer" }} />
           <div className={"dot-frame-pagination swiper-pagination"}></div>
-          <img
-            src={"/icons/arrow-right.svg"}
-            className={"swiper-button-next"}
-            style={{ transform: "rotate(-180deg)" }}
-          />
+          <img src={"/icons/arrow-right.svg"} style={{ transform: "rotate(-180deg)", cursor: "pointer" }} />
         </Box>
       </Stack>
     </div>

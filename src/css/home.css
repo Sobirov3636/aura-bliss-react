@@ -184,7 +184,7 @@
 
 .homepage .events-frame {
   width: 100%;
-  height: 745px;
+  height: auto;
   background: #f8f8ff;
   display: flex;
 }
@@ -203,7 +203,6 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 }
 
