@@ -23,7 +23,7 @@ export default function Basket() {
   };
 
   return (
-    <Box>
+    <Box className='basket-box'>
       <IconButton
         color='default'
         aria-label='cart'
@@ -34,7 +34,7 @@ export default function Basket() {
         onClick={handleClick}
       >
         <Badge badgeContent={3} color='secondary'>
-          <ShoppingCartIcon />
+          <ShoppingCartIcon className='shopping-cart' />
         </Badge>
       </IconButton>
       <Dialog maxWidth='md' onClose={handleClose} aria-labelledby='customized-dialog-title' open={open}>

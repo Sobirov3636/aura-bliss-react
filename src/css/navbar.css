@@ -285,7 +285,9 @@
 }
 
 /* BASKET */
-
+.basket-box:hover .shopping-cart {
+  color: #da1ada;
+}
 .basket-frame {
   position: relative;
   padding: 10px 4px 0px 4px;
