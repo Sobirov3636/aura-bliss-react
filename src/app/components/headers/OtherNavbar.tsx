@@ -57,13 +57,25 @@ function OtherNavbar() {
           </Stack>
         </Stack>
         {location.pathname === "/products" ? (
-          <Box className='main-text'>Products</Box>
+          <Box className='main-text' sx={{ width: "300px" }}>
+            Products
+          </Box>
         ) : location.pathname === "/help" ? (
-          <Box className='main-text'>Help</Box>
+          <Box className='main-text' sx={{ width: "300px" }}>
+            Help
+          </Box>
         ) : location.pathname === "/orders" ? (
-          <Box className='main-text'>Orders</Box>
+          <Box className='main-text' sx={{ width: "300px" }}>
+            Orders
+          </Box>
         ) : location.pathname === "/member-page" ? (
-          <Box className='main-text'>My Page</Box>
+          <Box className='main-text' sx={{ width: "300px" }}>
+            My Page
+          </Box>
+        ) : location.pathname.startsWith("/products/") ? (
+          <Box className='main-text' sx={{ width: "351px" }}>
+            Product Detail
+          </Box>
         ) : null}
 
         <img className='flowers' src='/icons/flowers.svg' alt='' />

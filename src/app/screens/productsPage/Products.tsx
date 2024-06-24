@@ -22,9 +22,10 @@ import PaginationItem from "@mui/material/PaginationItem";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import ProductCard from "../../components/ProductCard";
 
 function Products() {
-  const newArrivals = [
+  const products = [
     { name: "Tamburine", image: "/img/tamburine.jpeg" },
     { name: "Zarkoperfume", image: "/img/zarkoperfume.jpeg" },
     { name: "Wisteria", image: "/img/sunscren1.jpeg" },
@@ -103,47 +104,48 @@ function Products() {
                 <Divider />{" "}
               </Box>
               <Stack className='cards-frame-box'>
-                {newArrivals.length !== 0 ? (
+                {products.length !== 0 ? (
                   <CssVarsProvider>
-                    {newArrivals.map((product, index) => (
-                      <Card className='card'>
-                        <CardOverflow sx={{ position: "relative" }}>
-                          <span className='new'>New</span>
-                          <AspectRatio variant='soft' ratio='9/10' sx={{ minWidth: 200 }}>
-                            <img className='card-image' style={{ objectFit: "fill" }} src={product.image} alt='' />
-                          </AspectRatio>
-                        </CardOverflow>
-                        <CardContent className='card-bottom'>
-                          <Stack
-                            sx={{
-                              display: "flex",
-                              flexDirection: "row",
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <Typography className='product-name'>{product.name}</Typography>
-                            <Box className='product-view'>
-                              5
-                              <VisibilityIcon sx={{ fontSize: 25, marginLeft: "5px" }} />
-                            </Box>
-                          </Stack>
-                          <Typography className='product-desc'>This is a good product for you</Typography>
-                          <Stack
-                            sx={{
-                              display: "flex",
-                              flexDirection: "row",
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <Typography className='product-price'>$ 15</Typography>
-                            <Box className='shopping-cart-box'>
-                              <AddShoppingCartIcon className='shopping-cart-icon' />
-                            </Box>
-                          </Stack>
-                        </CardContent>
-                      </Card>
+                    {products.map((product, index) => (
+                      // <Card className='card'>
+                      //   <CardOverflow sx={{ position: "relative" }}>
+                      //     <span className='new'>New</span>
+                      //     <AspectRatio variant='soft' ratio='9/10' sx={{ minWidth: 200 }}>
+                      //       <img className='card-image' style={{ objectFit: "fill" }} src={product.image} alt='' />
+                      //     </AspectRatio>
+                      //   </CardOverflow>
+                      //   <CardContent className='card-bottom'>
+                      //     <Stack
+                      //       sx={{
+                      //         display: "flex",
+                      //         flexDirection: "row",
+                      //         alignItems: "center",
+                      //         justifyContent: "space-between",
+                      //       }}
+                      //     >
+                      //       <Typography className='product-name'>{product.name}</Typography>
+                      //       <Box className='product-view'>
+                      //         5
+                      //         <VisibilityIcon sx={{ fontSize: 25, marginLeft: "5px" }} />
+                      //       </Box>
+                      //     </Stack>
+                      //     <Typography className='product-desc'>This is a good product for you</Typography>
+                      //     <Stack
+                      //       sx={{
+                      //         display: "flex",
+                      //         flexDirection: "row",
+                      //         alignItems: "center",
+                      //         justifyContent: "space-between",
+                      //       }}
+                      //     >
+                      //       <Typography className='product-price'>$ 15</Typography>
+                      //       <Box className='shopping-cart-box'>
+                      //         <AddShoppingCartIcon className='shopping-cart-icon' />
+                      //       </Box>
+                      //     </Stack>
+                      //   </CardContent>
+                      // </Card>
+                      <ProductCard product={product} />
                     ))}
                   </CssVarsProvider>
                 ) : (
@@ -170,7 +172,7 @@ function Products() {
           </Stack>
         </Stack>
       </Container>
-      <img className='image-icon' src='/icons/bigFace.svg' alt='' />
+      <img className='image-icon' style={{ position: "absolute", top: "164%" }} src='/icons/bigFace.svg' alt='' />
     </div>
   );
 }
