@@ -20,26 +20,26 @@ function OtherNavbar() {
               <NavLink to='/'>Home</NavLink>
             </Box>
             <Box className={"hover-line"}>
-              <NavLink activeClassName={"underline"} to='/products'>
+              <NavLink activeStyle={{ color: "#d486d7" }} activeClassName={"underline"} to='/products'>
                 Products
               </NavLink>
             </Box>
             {authMember ? (
               <Box className={"hover-line"}>
-                <NavLink activeClassName={"underline"} to='/orders'>
+                <NavLink activeStyle={{ color: "#d486d7" }} activeClassName={"underline"} to='/orders'>
                   Orders
                 </NavLink>
               </Box>
             ) : null}
             {authMember ? (
               <Box className={"hover-line"}>
-                <NavLink activeClassName={"underline"} to='/member-page'>
+                <NavLink activeStyle={{ color: "#d486d7" }} activeClassName={"underline"} to='/member-page'>
                   My Page
                 </NavLink>
               </Box>
             ) : null}
             <Box className={"hover-line"}>
-              <NavLink activeClassName={"underline"} to='/help'>
+              <NavLink activeStyle={{ color: "#d486d7" }} activeClassName={"underline"} to='/help'>
                 Help
               </NavLink>
             </Box>
