@@ -23,19 +23,29 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import { Add, Close, Favorite, FavoriteBorder, Home, Remove } from "@mui/icons-material";
+import { serverApi } from "../../lib/config";
 
 interface ProductCardProps {
   product: any;
 }
 const ProductCard = (props: ProductCardProps) => {
   const { product } = props;
+  // @ts-ignore
+  const imagePath =
+    product.productImages && product.productImages.length > 0 ? `${serverApi}/${product.productImages[0]}` : "No image";
+
+  const productDate = new Date(product.createdAt);
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 90);
+  const isNew = productDate > oneWeekAgo;
   return (
     <CssVarsProvider>
       <Card className='card'>
         <CardOverflow sx={{ position: "relative" }}>
-          <span className='new'>New</span>
+          {isNew && <span className='new'>New</span>}
+          {product.productViews > 5 && <span className={`hot ${isNew ? "below-new" : ""}`}>Hot</span>}
           <AspectRatio variant='soft' ratio='9/10' sx={{ minWidth: 200 }}>
-            <img className='card-image' style={{ objectFit: "fill" }} src={product.image} alt='' />
+            <img className='card-image' style={{ objectFit: "fill" }} src={imagePath} alt='' />
           </AspectRatio>
         </CardOverflow>
         <CardContent className='card-bottom'>
@@ -47,17 +57,17 @@ const ProductCard = (props: ProductCardProps) => {
               justifyContent: "space-between",
             }}
           >
-            <Typography className='product-name'>{product.name}</Typography>
+            <Typography className='product-name'>{product.productName}</Typography>
             <Box className='product-view'>
-              5
+              {product.productViews}
               <VisibilityIcon sx={{ fontSize: 25, marginLeft: "5px" }} />
               <Box sx={{ display: "flex", alignItems: "center", marginLeft: "10px" }}>
-                <p>2</p>
+                <p>{0}</p>
                 <Favorite sx={{ color: "red", marginLeft: "5px" }} />
               </Box>
             </Box>
           </Stack>
-          <Typography className='product-desc'>This is a good product for you</Typography>
+          <Typography className='product-desc'>{product.productDesc ?? "No Description"}</Typography>
           <Stack
             sx={{
               display: "flex",
@@ -66,7 +76,7 @@ const ProductCard = (props: ProductCardProps) => {
               justifyContent: "space-between",
             }}
           >
-            <Typography className='product-price'>$ 15</Typography>
+            <Typography className='product-price'>$ {product.productPrice}</Typography>
             <Box className='shopping-cart-box'>
               <AddShoppingCartIcon className='shopping-cart-icon' />
             </Box>

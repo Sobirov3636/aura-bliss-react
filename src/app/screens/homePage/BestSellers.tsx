@@ -10,6 +10,18 @@ import { CssVarsProvider } from "@mui/joy/styles";
 import { Box, Container, Stack } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
+import { useSelector } from "react-redux";
+import { createSelector } from "reselect";
+import { retrieveBestSellers } from "./selector";
+import { Product } from "../../../lib/types/product";
+import { serverApi } from "../../../lib/config";
+import { ProductCategory } from "../../../lib/enums/product.enum";
+import ProductCard from "../../components/ProductCard";
+
+/** REDUX SLICE & SELECTOR **/
+
+const bestSellersRetriever = createSelector(retrieveBestSellers, (bestSellers) => ({ bestSellers }));
+
 const bestSellers = [
   { name: "Tamburine", image: "/img/tamburine.jpeg" },
   { name: "Zarkoperfume", image: "/img/zarkoperfume.jpeg" },
@@ -18,6 +30,8 @@ const bestSellers = [
 ];
 
 function BestSellers() {
+  const { bestSellers } = useSelector(bestSellersRetriever);
+  console.log("bestSellers:", bestSellers);
   return (
     <div className='best-sellers-frame'>
       <Container>
@@ -26,34 +40,37 @@ function BestSellers() {
           <Stack className='cards-frame'>
             {bestSellers.length !== 0 ? (
               <CssVarsProvider>
-                {/* Render popular dishes */}
-                {bestSellers.map((product, index) => (
-                  <Card className='card'>
-                    <CardOverflow>
-                      <AspectRatio variant='soft' ratio='4/5' sx={{ minWidth: 200 }}>
-                        <img style={{ objectFit: "fill" }} src={product.image} alt='' />
-                      </AspectRatio>
-                    </CardOverflow>
-                    <CardContent className='card-bottom'>
-                      <Stack
-                        sx={{
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <Typography className='product-name'>{product.name}</Typography>
-                        <Box className='product-view'>
-                          5
-                          <VisibilityIcon sx={{ fontSize: 25, marginLeft: "5px" }} />
-                        </Box>
-                      </Stack>
-                      <Typography className='product-desc'>This is a good product for you</Typography>
-                      <Typography className='product-price'>$ 15</Typography>
-                    </CardContent>
-                  </Card>
-                ))}
+                {/* Render best sellers */}
+                {bestSellers.map((product) => {
+                  return (
+                    <ProductCard product={product} key={product._id} />
+                    // <Card className='card'>
+                    //   <CardOverflow>
+                    //     <AspectRatio variant='soft' ratio='4/5' sx={{ minWidth: 200 }}>
+                    //       <img style={{ objectFit: "fill" }} src={imagePath} alt='' />
+                    //     </AspectRatio>
+                    //   </CardOverflow>
+                    //   <CardContent className='card-bottom'>
+                    //     <Stack
+                    //       sx={{
+                    //         display: "flex",
+                    //         flexDirection: "row",
+                    //         alignItems: "center",
+                    //         justifyContent: "space-between",
+                    //       }}
+                    //     >
+                    //       <Typography className='product-name'>{product.productName}</Typography>
+                    //       <Box className='product-view'>
+                    //         {product.productViews}
+                    //         <VisibilityIcon sx={{ fontSize: 25, marginLeft: "5px" }} />
+                    //       </Box>
+                    //     </Stack>
+                    //     <Typography className='product-desc'>{product.productDesc ?? "No Description"}</Typography>
+                    //     <Typography className='product-price'>$ {product.productPrice}</Typography>
+                    //   </CardContent>
+                    // </Card>
+                  );
+                })}
               </CssVarsProvider>
             ) : (
               <Box className='no-data'>Best Seller products are not available!</Box>
