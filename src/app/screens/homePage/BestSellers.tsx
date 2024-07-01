@@ -17,6 +17,7 @@ import { Product } from "../../../lib/types/product";
 import { serverApi } from "../../../lib/config";
 import { ProductCategory } from "../../../lib/enums/product.enum";
 import ProductCard from "../../components/ProductCard";
+import { useHistory } from "react-router-dom";
 
 /** REDUX SLICE & SELECTOR **/
 
@@ -31,7 +32,10 @@ const bestSellers = [
 
 function BestSellers() {
   const { bestSellers } = useSelector(bestSellersRetriever);
-  console.log("bestSellers:", bestSellers);
+  const history = useHistory();
+  const chooseProductHandler = (id: string) => {
+    history.push(`/products/${id}`);
+  };
   return (
     <div className='best-sellers-frame'>
       <Container>
@@ -43,7 +47,7 @@ function BestSellers() {
                 {/* Render best sellers */}
                 {bestSellers.map((product) => {
                   return (
-                    <ProductCard product={product} key={product._id} />
+                    <ProductCard product={product} chooseProductHandler={chooseProductHandler} key={product._id} />
                     // <Card className='card'>
                     //   <CardOverflow>
                     //     <AspectRatio variant='soft' ratio='4/5' sx={{ minWidth: 200 }}>

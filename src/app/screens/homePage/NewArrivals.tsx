@@ -13,12 +13,17 @@ import ProductCard from "../../components/ProductCard";
 import { useSelector } from "react-redux";
 import { createSelector } from "reselect";
 import { retrieveNewArrivals } from "./selector";
+import { useHistory } from "react-router-dom";
 
 /** REDUX SLICE & SELECTOR **/
 const newArrivalsRetriever = createSelector(retrieveNewArrivals, (newArrivals) => ({ newArrivals }));
 
 function NewArrivals() {
   const { newArrivals } = useSelector(newArrivalsRetriever);
+  const history = useHistory();
+  const chooseProductHandler = (id: string) => {
+    history.push(`/products/${id}`);
+  };
   console.log("newArrivals:", newArrivals);
 
   return (
@@ -30,7 +35,7 @@ function NewArrivals() {
             {newArrivals.length !== 0 ? (
               <CssVarsProvider>
                 {newArrivals.map((product) => (
-                  <ProductCard product={product} key={product._id} />
+                  <ProductCard product={product} chooseProductHandler={chooseProductHandler} key={product._id} />
                   // <Card className='card'>
                   //   <CardOverflow sx={{ position: "relative" }}>
                   //     <span className='new'>New</span>

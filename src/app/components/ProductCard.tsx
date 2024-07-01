@@ -27,9 +27,10 @@ import { serverApi } from "../../lib/config";
 
 interface ProductCardProps {
   product: any;
+  chooseProductHandler: any;
 }
 const ProductCard = (props: ProductCardProps) => {
-  const { product } = props;
+  const { product, chooseProductHandler } = props;
   // @ts-ignore
   const imagePath =
     product.productImages && product.productImages.length > 0 ? `${serverApi}/${product.productImages[0]}` : "No image";
@@ -40,7 +41,7 @@ const ProductCard = (props: ProductCardProps) => {
   const isNew = productDate > oneWeekAgo;
   return (
     <CssVarsProvider>
-      <Card className='card'>
+      <Card className='card' onClick={chooseProductHandler}>
         <CardOverflow sx={{ position: "relative" }}>
           {isNew && <span className='new'>New</span>}
           {product.productViews > 5 && <span className={`hot ${isNew ? "below-new" : ""}`}>Hot</span>}

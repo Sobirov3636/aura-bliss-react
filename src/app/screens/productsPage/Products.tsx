@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { SearchSharp } from "@mui/icons-material";
 import {
   Box,
@@ -7,6 +7,12 @@ import {
   Stack,
   Divider,
   Pagination,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  OutlinedInput,
   //   Checkbox,
 } from "@mui/material";
 import AspectRatio from "@mui/joy/AspectRatio";
@@ -26,12 +32,13 @@ import ProductCard from "../../components/ProductCard";
 import { Dispatch } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import { setProducts } from "./slice";
-import { Product } from "../../../lib/types/product";
+import { Product, ProductInquery } from "../../../lib/types/product";
 import { createSelector } from "reselect";
 import { retrieveProducts } from "./selector";
 import ProductService from "../../services/ProductService";
 import { serverApi } from "../../../lib/config";
-import { ProductCategory } from "../../../lib/enums/product.enum";
+import { ProductBrand, ProductCategory, ProductTargetUser } from "../../../lib/enums/product.enum";
+import { useHistory } from "react-router-dom";
 
 /** REDUX SLICE & SELECTOR **/
 const actionDispatch = (dispatch: Dispatch) => ({
@@ -42,20 +49,86 @@ const productsRetriever = createSelector(retrieveProducts, (products) => ({ prod
 function Products() {
   const { setProducts } = actionDispatch(useDispatch());
   const { products } = useSelector(productsRetriever);
+  const [productSearch, setProductSearch] = useState<ProductInquery>({
+    page: 1,
+    limit: 9,
+    order: "createdAt",
+    search: "",
+  });
+
+  const [searchText, setSearchText] = useState<string>("");
+
+  const history = useHistory();
 
   useEffect(() => {
     const product = new ProductService();
     product
-      .getProducts({
-        page: 1,
-        limit: 9,
-        order: "createdAt",
-        // productCategory: ProductCategory.MAKEUP,
-        search: "",
-      })
+      .getProducts(productSearch)
       .then((data) => setProducts(data))
       .catch((err) => console.log(err));
-  }, []);
+  }, [productSearch]);
+
+  useEffect(() => {
+    if (searchText === "") {
+      productSearch.search = "";
+      setProductSearch({ ...productSearch });
+    }
+  }, [searchText]);
+
+  /** HANDLERS **/
+
+  const searchCategoryHandler = (category: ProductCategory) => {
+    productSearch.page = 1;
+    productSearch.productCategory = category === "ALL" ? undefined : category;
+
+    setProductSearch({ ...productSearch });
+  };
+  const handleCategoryChange = (event: any) => {
+    searchCategoryHandler(event.target.value);
+  };
+
+  const searchBrandHandler = (brand: ProductBrand) => {
+    productSearch.page = 1;
+    productSearch.productBrand = brand === "ALL" ? undefined : brand;
+    setProductSearch({ ...productSearch });
+  };
+
+  const handleBrandChange = (event: any) => {
+    searchBrandHandler(event.target.value);
+  };
+
+  const searchTargetUserHandler = (targetUser: ProductTargetUser) => {
+    setProductSearch((prevSearch) => ({
+      ...prevSearch,
+      page: 1,
+      productTargetUser: targetUser === "ALL" ? undefined : targetUser,
+    }));
+  };
+
+  const handleTargetUserChange = (event: any) => {
+    searchTargetUserHandler(event.target.value);
+  };
+
+  const searchOrderHandler = (order: string) => {
+    productSearch.page = 1;
+    productSearch.order = order;
+    setProductSearch({ ...productSearch });
+  };
+
+  const searchProductHandler = () => {
+    productSearch.search = searchText;
+    setProductSearch({ ...productSearch });
+  };
+
+  const paginationHandler = (e: ChangeEvent<any>, value: number) => {
+    productSearch.page = value;
+    setProductSearch({ ...productSearch });
+  };
+
+  const chooseProductHandler = (id: string) => {
+    history.push(`/products/${id}`);
+  };
+  const resultCount = products.length;
 
   return (
     <div className='products'>
@@ -65,58 +138,109 @@ function Products() {
           <Stack className='products-box'>
             <Stack className='sidebar-frame'>
               <Box className='search-box'>
-                <input className='search-input' type='text' name='search' placeholder='Search...' />
-                <Box className='icon-search'>
+                <OutlinedInput
+                  className='search-input'
+                  type='text'
+                  name='search'
+                  placeholder='Search...'
+                  value={searchText}
+                  onChange={(e) => {
+                    setSearchText(e.target.value);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      searchProductHandler();
+                    }
+                  }}
+                />
+                <Box className='icon-search' onClick={searchProductHandler}>
                   <SearchIcon />
                 </Box>
               </Box>
               {/* <Divider  /> */}
               <Stack>
-                <Box className='checkbox-title'>Categories</Box>
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 1, marginTop: "15px" }}>
-                  <CssVarsProvider>
-                    <Checkbox label='Skin Care' size='md' />
-                    <Checkbox label='Body Care' size='md' />
-                    <Checkbox label='Hair Care' size='md' />
-                    <Checkbox label='Make Up' size='md' />
-                    <Checkbox label='Perfume' size='md' />
-                    {/* <Divider /> */}
-                  </CssVarsProvider>
-                </Box>
+                <FormControl>
+                  <FormLabel id='demo-radio-buttons-group-label' className='checkbox-title'>
+                    Category
+                  </FormLabel>
+                  <RadioGroup
+                    onChange={handleCategoryChange}
+                    aria-labelledby='demo-radio-buttons-group-label'
+                    name='radio-buttons-group'
+                    defaultValue='ALL'
+                  >
+                    <FormControlLabel value='ALL' control={<Radio />} label='All' />
+                    <FormControlLabel value='SKINCARE' control={<Radio />} label='Skin Care' />
+                    <FormControlLabel value='BODYCARE' control={<Radio />} label='Body Care' />
+                    <FormControlLabel value='HAIRCARE' control={<Radio />} label='Hair Care' />
+                    <FormControlLabel value='MAKEUP' control={<Radio />} label='Make Up' />
+                    <FormControlLabel value='PERFUME' control={<Radio />} label='Perfume' />
+                  </RadioGroup>
+                </FormControl>
 
-                <Box className='checkbox-title'>Brands</Box>
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 1, marginTop: "15px" }}>
-                  <CssVarsProvider>
-                    <Checkbox label='Chanel' size='md' />
-                    <Checkbox label='Olivie' size='md' />
-                    <Checkbox label='test1' size='md' />
-                    <Checkbox label='test2' size='md' />
-                    <Checkbox label='test3' size='md' />
-                    {/* <Divider /> */}
-                  </CssVarsProvider>
-                </Box>
+                <FormControl>
+                  <FormLabel id='demo-radio-buttons-group-label' className='checkbox-title'>
+                    Brands
+                  </FormLabel>
+                  <RadioGroup
+                    defaultValue='ALL'
+                    aria-labelledby='demo-radio-buttons-group-label'
+                    name='radio-buttons-group'
+                    onChange={handleBrandChange}
+                  >
+                    <FormControlLabel value='ALL' control={<Radio />} label='All' />
+                    <FormControlLabel value='ILLIYOON' control={<Radio />} label='Illiyoon' />
+                    <FormControlLabel value='BELIF' control={<Radio />} label='Belif' />
+                    <FormControlLabel value='JIGOTT' control={<Radio />} label='Jigott' />
+                    <FormControlLabel value='FARMSTAY' control={<Radio />} label='Farmstay' />
+                    <FormControlLabel value='EKEL' control={<Radio />} label='Ekel' />
+                    <FormControlLabel value='ANJO' control={<Radio />} label='Anjo' />
+                  </RadioGroup>
+                </FormControl>
 
-                <Box className='checkbox-title'>Gender</Box>
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 1, marginTop: "15px" }}>
-                  <CssVarsProvider>
-                    <Checkbox label='Men' size='md' />
-                    <Checkbox label='Women' size='md' />
-                    {/* <Divider /> */}
-                  </CssVarsProvider>
-                </Box>
+                <FormControl>
+                  <FormLabel id='demo-radio-buttons-group-label' className='checkbox-title'>
+                    Gender
+                  </FormLabel>
+                  <RadioGroup
+                    defaultValue='ALL'
+                    aria-labelledby='demo-radio-buttons-group-label'
+                    name='radio-buttons-group'
+                    onChange={handleTargetUserChange}
+                  >
+                    <FormControlLabel value='ALL' control={<Radio />} label='All' />
+                    <FormControlLabel value='MEN' control={<Radio />} label='Men' />
+                    <FormControlLabel value='WOMEN' control={<Radio />} label='Women' />
+                    <FormControlLabel value='UNISEX' control={<Radio />} label='Unisex' />
+                  </RadioGroup>
+                </FormControl>
               </Stack>
             </Stack>
             <Stack className='cards-frame'>
               <Box>
                 <Divider />
                 <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <p>Showing 1-12 of results</p>
+                  <p>{` Total ${resultCount} ${resultCount !== 1 ? "products" : "product"} available`}</p>
                   <Box sx={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
-                    <Button variant='contained'>New</Button>
-                    <Button variant='contained' color='secondary'>
+                    <Button
+                      variant='contained'
+                      color={productSearch.order === "createdAt" ? "primary" : "secondary"}
+                      onClick={() => searchOrderHandler("createdAt")}
+                    >
+                      New
+                    </Button>
+                    <Button
+                      variant='contained'
+                      color={productSearch.order === "productPrice" ? "primary" : "secondary"}
+                      onClick={() => searchOrderHandler("productPrice")}
+                    >
                       Price
                     </Button>
-                    <Button variant='contained' color='secondary'>
+                    <Button
+                      variant='contained'
+                      color={productSearch.order === "productViews" ? "primary" : "secondary"}
+                      onClick={() => searchOrderHandler("productViews")}
+                    >
                       Views
                     </Button>
                   </Box>
@@ -126,58 +250,20 @@ function Products() {
               <Stack className='cards-frame-box'>
                 {products.length !== 0 ? (
                   <CssVarsProvider>
-                    {products.map((product, index) => (
-                      // <Card className='card'>
-                      //   <CardOverflow sx={{ position: "relative" }}>
-                      //     <span className='new'>New</span>
-                      //     <AspectRatio variant='soft' ratio='9/10' sx={{ minWidth: 200 }}>
-                      //       <img className='card-image' style={{ objectFit: "fill" }} src={product.image} alt='' />
-                      //     </AspectRatio>
-                      //   </CardOverflow>
-                      //   <CardContent className='card-bottom'>
-                      //     <Stack
-                      //       sx={{
-                      //         display: "flex",
-                      //         flexDirection: "row",
-                      //         alignItems: "center",
-                      //         justifyContent: "space-between",
-                      //       }}
-                      //     >
-                      //       <Typography className='product-name'>{product.name}</Typography>
-                      //       <Box className='product-view'>
-                      //         5
-                      //         <VisibilityIcon sx={{ fontSize: 25, marginLeft: "5px" }} />
-                      //       </Box>
-                      //     </Stack>
-                      //     <Typography className='product-desc'>This is a good product for you</Typography>
-                      //     <Stack
-                      //       sx={{
-                      //         display: "flex",
-                      //         flexDirection: "row",
-                      //         alignItems: "center",
-                      //         justifyContent: "space-between",
-                      //       }}
-                      //     >
-                      //       <Typography className='product-price'>$ 15</Typography>
-                      //       <Box className='shopping-cart-box'>
-                      //         <AddShoppingCartIcon className='shopping-cart-icon' />
-                      //       </Box>
-                      //     </Stack>
-                      //   </CardContent>
-                      // </Card>
-                      <ProductCard product={product} />
+                    {products.map((product) => (
+                      <ProductCard product={product} key={product?._id} chooseProductHandler={chooseProductHandler} />
                     ))}
                   </CssVarsProvider>
                 ) : (
-                  <Box className='no-data'>New Arrival products are not available!</Box>
+                  <Box className='no-data'> Products are not available!</Box>
                 )}
               </Stack>
             </Stack>
           </Stack>
           <Stack className={"pagination-section"}>
             <Pagination
-              count={3}
-              page={1}
+              count={products.length !== 0 ? productSearch.page + 1 : productSearch.page}
+              page={productSearch.page}
               renderItem={(item) => (
                 <PaginationItem
                   components={{
@@ -188,11 +274,12 @@ function Products() {
                   color={"secondary"}
                 />
               )}
+              onChange={paginationHandler}
             />
           </Stack>
         </Stack>
       </Container>
-      <img className='image-icon' style={{ position: "absolute", top: "164%" }} src='/icons/bigFace.svg' alt='' />
+      <img className='image-icon' style={{ position: "absolute", top: "180%" }} src='/icons/bigFace.svg' alt='' />
     </div>
   );
 }

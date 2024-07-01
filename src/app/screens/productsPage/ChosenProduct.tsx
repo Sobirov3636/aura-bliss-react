@@ -20,6 +20,7 @@ import { Product } from "../../../lib/types/product";
 import { createSelector } from "reselect";
 import { retrieveChosenProduct, retrieveProducts } from "./selector";
 import { Member } from "../../../lib/types/member";
+import { useHistory } from "react-router-dom";
 
 /** REDUX SLICE & SELECTOR **/
 const actionDispatch = (dispatch: Dispatch) => ({
@@ -41,6 +42,10 @@ const products = [
 ];
 
 function ChosenProduct() {
+  const history = useHistory();
+  const chooseProductHandler = (id: string) => {
+    history.push(`/products/${id}`);
+  };
   const images = [
     { imgUrl: "/img/sunscren1.jpeg" },
     { imgUrl: "/img/suncreem2.jpeg" },
@@ -155,7 +160,7 @@ function ChosenProduct() {
             >
               {products.map((product, index) => (
                 <SwiperSlide key={index}>
-                  <ProductCard product={product} />
+                  <ProductCard product={product} chooseProductHandler={chooseProductHandler} />
                 </SwiperSlide>
               ))}
             </Swiper>

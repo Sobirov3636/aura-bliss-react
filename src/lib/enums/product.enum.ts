@@ -19,6 +19,7 @@ export enum ProductStatus {
 }
 
 export enum ProductCategory {
+  ALL = "ALL",
   SKINCARE = "SKIN CARE",
   BODYCARE = "BODY CARE",
   HAIRCARE = "HAIR CARE",
@@ -27,13 +28,14 @@ export enum ProductCategory {
   OTHER = "OTHER",
 }
 export enum ProductTargetUser {
+  ALL = "ALL",
   MEN = "MEN",
   WOMEN = "WOMEN",
   UNISEX = "UNISEX",
 }
 
 export enum ProductBrand {
-  DRJART = "DR. JART+",
+  ALL = "ALL",
   ILLIYOON = "ILLIYOON",
   BELIF = "BELIF",
   JIGOTT = "JIGOTT",
