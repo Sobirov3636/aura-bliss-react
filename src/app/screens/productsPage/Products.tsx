@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SearchSharp } from "@mui/icons-material";
 import {
   Box,
@@ -29,6 +29,9 @@ import { setProducts } from "./slice";
 import { Product } from "../../../lib/types/product";
 import { createSelector } from "reselect";
 import { retrieveProducts } from "./selector";
+import ProductService from "../../services/ProductService";
+import { serverApi } from "../../../lib/config";
+import { ProductCategory } from "../../../lib/enums/product.enum";
 
 /** REDUX SLICE & SELECTOR **/
 const actionDispatch = (dispatch: Dispatch) => ({
@@ -37,17 +40,22 @@ const actionDispatch = (dispatch: Dispatch) => ({
 const productsRetriever = createSelector(retrieveProducts, (products) => ({ products }));
 
 function Products() {
-  const products = [
-    { name: "Tamburine", image: "/img/tamburine.jpeg" },
-    { name: "Zarkoperfume", image: "/img/zarkoperfume.jpeg" },
-    { name: "Wisteria", image: "/img/sunscren1.jpeg" },
-    { name: "Wisteria", image: "/img/sunscren1.jpeg" },
-    { name: "Wisteria", image: "/img/sunscren1.jpeg" },
-    { name: "Wisteria", image: "/img/sunscren1.jpeg" },
-    { name: "Wisteria", image: "/img/sunscren1.jpeg" },
-    { name: "Wisteria", image: "/img/sunscren1.jpeg" },
-    { name: "Wisteria", image: "/img/sunscren1.jpeg" },
-  ];
+  const { setProducts } = actionDispatch(useDispatch());
+  const { products } = useSelector(productsRetriever);
+
+  useEffect(() => {
+    const product = new ProductService();
+    product
+      .getProducts({
+        page: 1,
+        limit: 9,
+        order: "createdAt",
+        // productCategory: ProductCategory.MAKEUP,
+        search: "",
+      })
+      .then((data) => setProducts(data))
+      .catch((err) => console.log(err));
+  }, []);
 
   return (
     <div className='products'>
