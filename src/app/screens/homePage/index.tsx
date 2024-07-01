@@ -10,17 +10,18 @@ import { createSelector } from "reselect";
 
 import { retrieveBestSellers } from "./selector";
 import { Product } from "../../../lib/types/product";
-import { setBestSellers } from "./store";
+import { setBestSellers, setNewArrivals } from "./store";
 import { ProductCategory } from "../../../lib/enums/product.enum";
 import ProductService from "../../services/ProductService";
 
 /** REDUX SLICE & SELECTOR **/
 const actionDispatch = (dispatch: Dispatch) => ({
   setBestSellers: (data: Product[]) => dispatch(setBestSellers(data)),
+  setNewArrivals: (data: Product[]) => dispatch(setNewArrivals(data)),
 });
 
 function HomePage() {
-  const { setBestSellers } = actionDispatch(useDispatch());
+  const { setBestSellers, setNewArrivals } = actionDispatch(useDispatch());
 
   useEffect(() => {
     // Backend server data fetch => Data
@@ -36,6 +37,19 @@ function HomePage() {
         setBestSellers(data);
       })
       .catch((err: any) => console.log(err));
+
+    // New Arrivals
+    product
+      .getProducts({
+        page: 1,
+        limit: 4,
+        order: "createdAt",
+        // productCollection: ProductCollection.DISH,
+      })
+      .then((data) => {
+        setNewArrivals(data);
+      })
+      .catch((err) => console.log(err));
   }, []);
   return (
     <div className='homepage'>

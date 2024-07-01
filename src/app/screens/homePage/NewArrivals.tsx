@@ -9,15 +9,18 @@ import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import { CssVarsProvider } from "@mui/joy/styles";
 import { Box, Container, Stack } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import ProductCard from "../../components/ProductCard";
+import { useSelector } from "react-redux";
+import { createSelector } from "reselect";
+import { retrieveNewArrivals } from "./selector";
 
-const newArrivals = [
-  { name: "Tamburine", image: "/img/tamburine.jpeg" },
-  { name: "Zarkoperfume", image: "/img/zarkoperfume.jpeg" },
-  { name: "Wisteria", image: "/img/sunscren1.jpeg" },
-  { name: "Dr Vita", image: "/img/suncream5.jpeg" },
-];
+/** REDUX SLICE & SELECTOR **/
+const newArrivalsRetriever = createSelector(retrieveNewArrivals, (newArrivals) => ({ newArrivals }));
 
 function NewArrivals() {
+  const { newArrivals } = useSelector(newArrivalsRetriever);
+  console.log("newArrivals:", newArrivals);
+
   return (
     <div className='best-sellers-frame'>
       <Container>
@@ -26,33 +29,34 @@ function NewArrivals() {
           <Stack className='cards-frame'>
             {newArrivals.length !== 0 ? (
               <CssVarsProvider>
-                {newArrivals.map((product, index) => (
-                  <Card className='card'>
-                    <CardOverflow sx={{ position: "relative" }}>
-                      <span className='new'>New</span>
-                      <AspectRatio variant='soft' ratio='4/5' sx={{ minWidth: 200 }}>
-                        <img style={{ objectFit: "fill" }} src={product.image} alt='' />
-                      </AspectRatio>
-                    </CardOverflow>
-                    <CardContent className='card-bottom'>
-                      <Stack
-                        sx={{
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <Typography className='product-name'>{product.name}</Typography>
-                        <Box className='product-view'>
-                          5
-                          <VisibilityIcon sx={{ fontSize: 25, marginLeft: "5px" }} />
-                        </Box>
-                      </Stack>
-                      <Typography className='product-desc'>This is a good product for you</Typography>
-                      <Typography className='product-price'>$ 15</Typography>
-                    </CardContent>
-                  </Card>
+                {newArrivals.map((product) => (
+                  <ProductCard product={product} key={product._id} />
+                  // <Card className='card'>
+                  //   <CardOverflow sx={{ position: "relative" }}>
+                  //     <span className='new'>New</span>
+                  //     <AspectRatio variant='soft' ratio='4/5' sx={{ minWidth: 200 }}>
+                  //       <img style={{ objectFit: "fill" }} src={product.image} alt='' />
+                  //     </AspectRatio>
+                  //   </CardOverflow>
+                  //   <CardContent className='card-bottom'>
+                  //     <Stack
+                  //       sx={{
+                  //         display: "flex",
+                  //         flexDirection: "row",
+                  //         alignItems: "center",
+                  //         justifyContent: "space-between",
+                  //       }}
+                  //     >
+                  //       <Typography className='product-name'>{product.name}</Typography>
+                  //       <Box className='product-view'>
+                  //         5
+                  //         <VisibilityIcon sx={{ fontSize: 25, marginLeft: "5px" }} />
+                  //       </Box>
+                  //     </Stack>
+                  //     <Typography className='product-desc'>This is a good product for you</Typography>
+                  //     <Typography className='product-price'>$ 15</Typography>
+                  //   </CardContent>
+                  // </Card>
                 ))}
               </CssVarsProvider>
             ) : (
