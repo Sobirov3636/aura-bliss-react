@@ -13,6 +13,20 @@ import "swiper/css/thumbs";
 import { FreeMode, Navigation, Thumbs } from "swiper";
 import { CssVarsProvider } from "@mui/joy";
 import ProductCard from "../../components/ProductCard";
+import { Dispatch } from "@reduxjs/toolkit";
+import { useDispatch, useSelector } from "react-redux";
+import { setChosenProduct, setProducts } from "./slice";
+import { Product } from "../../../lib/types/product";
+import { createSelector } from "reselect";
+import { retrieveChosenProduct, retrieveProducts } from "./selector";
+import { Member } from "../../../lib/types/member";
+
+/** REDUX SLICE & SELECTOR **/
+const actionDispatch = (dispatch: Dispatch) => ({
+  setChosenProduct: (data: Product) => dispatch(setChosenProduct(data)),
+});
+
+const chosenProductRetriever = createSelector(retrieveChosenProduct, (chosenProduct) => ({ chosenProduct }));
 
 const products = [
   { name: "Tamburine", image: "/img/tamburine.jpeg" },

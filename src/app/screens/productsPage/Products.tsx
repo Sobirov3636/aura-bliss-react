@@ -23,6 +23,18 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import ProductCard from "../../components/ProductCard";
+import { Dispatch } from "@reduxjs/toolkit";
+import { useDispatch, useSelector } from "react-redux";
+import { setProducts } from "./slice";
+import { Product } from "../../../lib/types/product";
+import { createSelector } from "reselect";
+import { retrieveProducts } from "./selector";
+
+/** REDUX SLICE & SELECTOR **/
+const actionDispatch = (dispatch: Dispatch) => ({
+  setProducts: (data: Product[]) => dispatch(setProducts(data)),
+});
+const productsRetriever = createSelector(retrieveProducts, (products) => ({ products }));
 
 function Products() {
   const products = [
