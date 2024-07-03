@@ -45,7 +45,7 @@ import { CartItem } from "../../../lib/types/search";
 const actionDispatch = (dispatch: Dispatch) => ({
   setProducts: (data: Product[]) => dispatch(setProducts(data)),
 });
-const productsRetriever = createSelector(retrieveProducts, (products) => ({ products }));
+export const productsRetriever = createSelector(retrieveProducts, (products) => ({ products }));
 
 interface ProductsProps {
   onAdd: (item: CartItem) => void;

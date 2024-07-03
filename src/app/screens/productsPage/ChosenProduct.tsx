@@ -24,6 +24,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { serverApi } from "../../../lib/config";
 import ProductService from "../../services/ProductService";
 import { CartItem } from "../../../lib/types/search";
+import { productsRetriever } from "./Products";
 
 /** REDUX SLICE & SELECTOR **/
 const actionDispatch = (dispatch: Dispatch) => ({
@@ -31,18 +32,6 @@ const actionDispatch = (dispatch: Dispatch) => ({
 });
 
 const chosenProductRetriever = createSelector(retrieveChosenProduct, (chosenProduct) => ({ chosenProduct }));
-
-const products = [
-  { name: "Tamburine", image: "/img/tamburine.jpeg" },
-  { name: "Zarkoperfume", image: "/img/zarkoperfume.jpeg" },
-  { name: "Wisteria", image: "/img/sunscren1.jpeg" },
-  { name: "Wisteria", image: "/img/sunscren1.jpeg" },
-  { name: "Wisteria", image: "/img/sunscren1.jpeg" },
-  { name: "Wisteria", image: "/img/sunscren1.jpeg" },
-  { name: "Wisteria", image: "/img/sunscren1.jpeg" },
-  { name: "Wisteria", image: "/img/sunscren1.jpeg" },
-  { name: "Wisteria", image: "/img/sunscren1.jpeg" },
-];
 
 interface ChosenProductProps {
   onAdd: (item: CartItem) => void;
@@ -59,6 +48,8 @@ function ChosenProduct(props: ChosenProductProps) {
   const { productId } = useParams<{ productId: string }>();
   const { setChosenProduct } = actionDispatch(useDispatch());
   const { chosenProduct } = useSelector(chosenProductRetriever);
+  const { products } = useSelector(productsRetriever);
+  console.log("productssss:::", products);
 
   useEffect(() => {
     const product = new ProductService();
