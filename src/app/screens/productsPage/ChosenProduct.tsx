@@ -46,13 +46,16 @@ const products = [
 
 interface ChosenProductProps {
   onAdd: (item: CartItem) => void;
+  onRemove: (item: CartItem) => void;
+  onDelete: (item: CartItem) => void;
+  onDeleteAll: () => void;
 }
 
 function ChosenProduct(props: ChosenProductProps) {
-  const { onAdd } = props;
+  const { onAdd, onRemove } = props;
   const [slideImage, setSlideImage] = useState<string>("");
+  const [quantity, setQuantity] = useState<number>(1);
   const history = useHistory();
-
   const { productId } = useParams<{ productId: string }>();
   const { setChosenProduct } = actionDispatch(useDispatch());
   const { chosenProduct } = useSelector(chosenProductRetriever);
@@ -142,9 +145,9 @@ function ChosenProduct(props: ChosenProductProps) {
             </Box>
             <Box className='product-add-box'>
               <Box className='product-quantity'>
-                <Remove className='remove-icon' />
-                <p className='quantity'>1</p>
-                <Add className='add-icon' />
+                <Remove className='remove-icon' onClick={() => setQuantity((prev) => Math.max(prev - 1, 1))} />
+                <p className='quantity'>{quantity}</p>
+                <Add className='add-icon' onClick={() => setQuantity((prev) => prev + 1)} />
               </Box>
               <Button
                 variant='contained'
@@ -153,7 +156,7 @@ function ChosenProduct(props: ChosenProductProps) {
                 onClick={(e) => {
                   onAdd({
                     _id: chosenProduct._id,
-                    quantity: 1,
+                    quantity,
                     name: chosenProduct.productName,
                     price: chosenProduct.productPrice,
                     image: chosenProduct.productImages[0],

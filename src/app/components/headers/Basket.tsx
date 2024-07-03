@@ -13,9 +13,17 @@ import { serverApi } from "../../../lib/config";
 
 interface BasketProps {
   cartItems: CartItem[];
+  onAdd: (item: CartItem) => void;
+  onRemove: (item: CartItem) => void;
+  onDelete: (item: CartItem) => void;
+  onDeleteAll: () => void;
 }
 export default function Basket(props: BasketProps) {
-  const { cartItems } = props;
+  const { cartItems, onAdd, onRemove, onDelete, onDeleteAll } = props;
+
+  const itemsPrice: number = cartItems.reduce((a: number, c: CartItem) => a + c.quantity * c.price, 0);
+  const shippingCost: number = itemsPrice < 100 ? 5 : 0;
+  const totalPrice = (itemsPrice + shippingCost).toFixed(1);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -51,7 +59,10 @@ export default function Basket(props: BasketProps) {
             ) : (
               <Stack flexDirection={"row"} alignItems={"center"}>
                 <div>Cart Products:</div>
-                <DeleteForeverIcon sx={{ cursor: "pointer", color: "#0f0e0e", ml: "5px" }} />
+                <DeleteForeverIcon
+                  sx={{ cursor: "pointer", color: "#0f0e0e", ml: "5px" }}
+                  onClick={() => onDeleteAll()}
+                />
               </Stack>
             )}
           </Box>
@@ -82,14 +93,20 @@ export default function Basket(props: BasketProps) {
                       <TableCell sx={{ fontSize: "17px", padding: "6px 20px" }}>{item.name}</TableCell>
                       <TableCell sx={{ fontSize: "15px", padding: "6px 25px" }}>
                         <div style={{ display: "flex", alignItems: "center" }}>
-                          <KeyboardArrowLeftIcon sx={{ width: "30px", height: "30px", cursor: "pointer" }} />
+                          <KeyboardArrowLeftIcon
+                            sx={{ width: "30px", height: "30px", cursor: "pointer" }}
+                            onClick={() => onRemove(item)}
+                          />
                           <span style={{ margin: "0 5px", fontSize: "17px" }}>{item.quantity}</span>
-                          <KeyboardArrowRightIcon sx={{ width: "30px", height: "30px", cursor: "pointer" }} />
+                          <KeyboardArrowRightIcon
+                            sx={{ width: "30px", height: "30px", cursor: "pointer" }}
+                            onClick={() => onAdd(item)}
+                          />
                         </div>
                       </TableCell>
                       <TableCell sx={{ fontSize: "17px", padding: "6px 35px" }}> $ {item.price}</TableCell>
                       <TableCell sx={{ fontSize: "17px", padding: "6px 50px" }}>
-                        <CancelIcon color={"primary"} sx={{ cursor: "pointer" }} />
+                        <CancelIcon color={"primary"} sx={{ cursor: "pointer" }} onClick={() => onDelete(item)} />
                       </TableCell>
                     </TableRow>
                   </TableBody>
@@ -98,18 +115,22 @@ export default function Basket(props: BasketProps) {
             </Table>
           </TableContainer>
 
-          <Box className={"basket-order"}>
-            <Button variant={"contained"} color='error' onClick={handleClose}>
-              Cancel
-            </Button>
-            <span style={{ fontSize: "20px" }}>
-              {" "}
-              <span style={{ fontWeight: "bold" }}>Total:</span> $100 (98 +2)
-            </span>
-            <Button startIcon={<ShoppingCartIcon />} variant={"contained"} color='secondary'>
-              Order
-            </Button>
-          </Box>
+          {cartItems.length !== 0 ? (
+            <Box className={"basket-order"}>
+              <Button variant={"contained"} color='error' onClick={handleClose}>
+                Cancel
+              </Button>
+              <span style={{ fontSize: "20px" }}>
+                {" "}
+                <span style={{ fontWeight: "bold" }}>Total:</span> {totalPrice} ({itemsPrice} + {shippingCost})
+              </span>
+              <Button startIcon={<ShoppingCartIcon />} variant={"contained"} color='secondary'>
+                Order
+              </Button>
+            </Box>
+          ) : (
+            ""
+          )}
         </Stack>
       </Dialog>
     </Box>
