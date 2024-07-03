@@ -146,7 +146,20 @@ function ChosenProduct(props: ChosenProductProps) {
                 <p className='quantity'>1</p>
                 <Add className='add-icon' />
               </Box>
-              <Button variant='contained' color='secondary' className='product-add-btn'>
+              <Button
+                variant='contained'
+                color='secondary'
+                className='product-add-btn'
+                onClick={(e) => {
+                  onAdd({
+                    _id: chosenProduct._id,
+                    quantity: 1,
+                    name: chosenProduct.productName,
+                    price: chosenProduct.productPrice,
+                    image: chosenProduct.productImages[0],
+                  });
+                }}
+              >
                 add to cart
               </Button>
             </Box>
