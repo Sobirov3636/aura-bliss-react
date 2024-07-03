@@ -251,7 +251,11 @@ function Products() {
                 {products.length !== 0 ? (
                   <CssVarsProvider>
                     {products.map((product) => (
-                      <ProductCard product={product} key={product?._id} chooseProductHandler={chooseProductHandler} />
+                      <ProductCard
+                        product={product}
+                        key={product?._id}
+                        chooseProductHandler={() => chooseProductHandler(product?._id)}
+                      />
                     ))}
                   </CssVarsProvider>
                 ) : (

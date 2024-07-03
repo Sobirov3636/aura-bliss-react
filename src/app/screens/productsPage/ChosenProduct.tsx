@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Button, Container, Divider, Rating, Stack, useTheme } from "@mui/material";
 import { Add, Close, Favorite, FavoriteBorder, Home, Remove } from "@mui/icons-material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -20,7 +20,9 @@ import { Product } from "../../../lib/types/product";
 import { createSelector } from "reselect";
 import { retrieveChosenProduct, retrieveProducts } from "./selector";
 import { Member } from "../../../lib/types/member";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
+import { serverApi } from "../../../lib/config";
+import ProductService from "../../services/ProductService";
 
 /** REDUX SLICE & SELECTOR **/
 const actionDispatch = (dispatch: Dispatch) => ({
@@ -42,112 +44,109 @@ const products = [
 ];
 
 function ChosenProduct() {
+  const [slideImage, setSlideImage] = useState<string>("");
   const history = useHistory();
+
+  const { productId } = useParams<{ productId: string }>();
+  const { setChosenProduct } = actionDispatch(useDispatch());
+  const { chosenProduct } = useSelector(chosenProductRetriever);
+
+  useEffect(() => {
+    const product = new ProductService();
+    product
+      .getProduct(productId)
+      .then((data) => {
+        setChosenProduct(data);
+        setSlideImage(data.productImages[0]);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  if (!chosenProduct) return null;
+
+  // HANDLERS
+
+  // CHANGE IMAGE HANDLER
+  const changeImageHandler = (image: string) => {
+    setSlideImage(image);
+  };
   const chooseProductHandler = (id: string) => {
     history.push(`/products/${id}`);
   };
-  const images = [
-    { imgUrl: "/img/sunscren1.jpeg" },
-    { imgUrl: "/img/suncreem2.jpeg" },
-    { imgUrl: "/img/suncream5.jpeg" },
-    { imgUrl: "/img/tamburine.jpeg" },
-    { imgUrl: "/img/whitening1.jpeg" },
-  ];
-  const [thumbsSwiper, setThumbsSwiper] = useState();
+
   return (
     <div className='chosen-product'>
       <Container className='product-container'>
-        {/* 
-        <Stack className='product-image-box'>
-          <Swiper
-            loop={true}
-            spaceBetween={10}
-            navigation={true}
-            thumbs={{ swiper: thumbsSwiper }}
-            modules={[FreeMode, Navigation, Thumbs]}
-            className='mySwiper2'
-          >
-            {images.map((img, index) => (
-              <SwiperSlide key={index}>
-                <img src={img.imgUrl} alt='Pruduct Image' />
-              </SwiperSlide>
-            ))}
-          </Swiper>
+        <Stack sx={{ display: "flex", flexDirection: "row", marginBottom: "200px", gap: "100px" }}>
+          <Stack className={"images"}>
+            <Stack className={"main-image"}>
+              <img src={slideImage ? `${serverApi}/${slideImage}` : "/img/product/bigImage.png"} alt={"main-image"} />
+            </Stack>
+            <Stack className={"sub-images"}>
+              {chosenProduct?.productImages.map((subImg: string) => {
+                const imagePath: string = `${serverApi}/${subImg}`;
+                return (
+                  <Stack className={"sub-img-box"} onClick={() => changeImageHandler(subImg)} key={subImg}>
+                    <img src={imagePath} alt={"sub-image"} />
+                  </Stack>
+                );
+              })}
+            </Stack>
+          </Stack>
 
-          <Swiper
-            // @ts-ignore
-            onSwiper={setThumbsSwiper}
-            loop={true}
-            spaceBetween={10}
-            slidesPerView={4}
-            freeMode={true}
-            watchSlidesProgress={true}
-            modules={[FreeMode, Navigation, Thumbs]}
-            className='mySwiper'
-          >
-            {images.map((img, index) => (
-              <SwiperSlide key={index}>
-                <div className='product-images-slider-thumbs-wrapper'>
-                  <img src={img.imgUrl} alt='Pruduct Image' />
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </Stack>
-         */}
-        <Stack className='product-info'>
-          <Box className='name-wrap'>
-            <h4 className='product-name'>Product Name</h4>
-            <Box display={"flex"} alignItems={"center"}>
-              <Box className='visibility-box'>
-                <VisibilityIcon sx={{ color: "gray" }} /> <p style={{ marginLeft: "5px" }}>5</p>
+          <Stack className='product-info'>
+            <Box className='name-wrap'>
+              <h4 className='product-name'>{chosenProduct?.productName}</h4>
+              <Box display={"flex"} alignItems={"center"}>
+                <Box className='visibility-box'>
+                  <VisibilityIcon sx={{ color: "gray" }} />{" "}
+                  <p style={{ marginLeft: "5px" }}>{chosenProduct?.productViews}</p>
+                </Box>
+                <Favorite style={{ color: "red" }} />
               </Box>
-              <Favorite style={{ color: "red" }} />
             </Box>
-          </Box>
-          <Box className='rating-box'>
-            <Rating size='small' sx={{ marginRight: "5px" }} defaultValue={2.5} precision={0.5} />
-            <p style={{ fontSize: "14px", color: "#4f6f77" }}>Reviews(15)</p>
-          </Box>
-          <Divider sx={{ background: "#ccc", height: "1px", margin: "10px 0", width: "100%" }} />
+            <Box className='rating-box'>
+              <Rating size='small' sx={{ marginRight: "5px" }} defaultValue={2.5} precision={0.5} />
+              <p style={{ fontSize: "14px", color: "#4f6f77" }}>Reviews(15)</p>
+            </Box>
+            <Divider sx={{ background: "#ccc", height: "1px", margin: "10px 0", width: "100%" }} />
 
-          <Box className='price-box'>
-            <p className='current-price'>$12.5</p>
-            <p className='real-price'>$25 </p>
-            <Box className='discount-percent'>
-              <p>-50%</p>
+            <Box className='price-box'>
+              <p className='current-price'>${chosenProduct?.productPrice}</p>
+              {/* <p className='real-price'>$25 </p>
+              <Box className='discount-percent'>
+                <p>-50%</p>
+              </Box> */}
             </Box>
-          </Box>
-          <Box className='product-desc'>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe nisi rerum quibusdam distinctio eum rem, ad,
-            blanditiis modi enim eaque, officia voluptatem? Dolore tempora totam exercitationem dolorum sed eum eaque?
-          </Box>
-          <Divider sx={{ background: "#ccc", height: "1px", margin: "20px 0", width: "100%" }} />
-          <Box className='product-size-box'>
-            <Box sx={{ fontWeight: "bold" }}>Product Size</Box>
-            <Box className='size-detail-box'>
-              <Button className='size-detail' variant='contained'>
-                50ml
-              </Button>
-              <Button className='size-detail' variant='contained' sx={{ background: "#fff", color: "#000" }}>
-                100ml
-              </Button>
-              <Button className='size-detail' variant='contained' sx={{ background: "#fff", color: "#000" }}>
-                150ml
+            <Box className='product-desc'>{chosenProduct?.productDesc}</Box>
+            <Divider sx={{ background: "#ccc", height: "1px", margin: "20px 0", width: "100%" }} />
+            <Box className='product-size-box'>
+              <Box sx={{ fontWeight: "bold" }}>Product Size</Box>
+              <Box className='size-detail-box'>
+                <Button className='size-detail' variant='contained'>
+                  {chosenProduct?.productVolume}ml
+                </Button>
+                {/* <Button className='size-detail' variant='contained' sx={{ background: "#fff", color: "#000" }}>
+                  100ml
+                </Button>
+                <Button className='size-detail' variant='contained' sx={{ background: "#fff", color: "#000" }}>
+                  150ml
+                </Button> */}
+              </Box>
+            </Box>
+            <Box className='product-add-box'>
+              <Box className='product-quantity'>
+                <Remove className='remove-icon' />
+                <p className='quantity'>1</p>
+                <Add className='add-icon' />
+              </Box>
+              <Button variant='contained' color='secondary' className='product-add-btn'>
+                add to cart
               </Button>
             </Box>
-          </Box>
-          <Box className='product-add-box'>
-            <Box className='product-quantity'>
-              <Remove className='remove-icon' />
-              <p className='quantity'>1</p>
-              <Add className='add-icon' />
-            </Box>
-            <Button variant='contained' color='secondary' className='product-add-btn'>
-              add to cart
-            </Button>
-          </Box>
+          </Stack>
         </Stack>
+
         <Stack className='cards-frame'>
           <Box className='title'>Related Products </Box>
           <Stack className='cards-frame-box'>

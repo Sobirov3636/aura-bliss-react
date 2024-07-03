@@ -78,7 +78,24 @@ const ProductCard = (props: ProductCardProps) => {
             }}
           >
             <Typography className='product-price'>$ {product.productPrice}</Typography>
-            <Box className='shopping-cart-box'>
+            <Box className='shopping-cart-box' sx={{ display: "flex", alignItems: "center" }}>
+              <Box
+                sx={{
+                  height: "33px",
+                  width: "55px",
+                  borderRadius: "5px",
+                  marginRight: "10px",
+                  display: "flex",
+                  textTransform: "lowercase",
+                  border: "1px solid gray",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: "rgb(139, 132, 160)",
+                  color: "#fff",
+                }}
+              >
+                {product.productVolume}ml
+              </Box>
               <AddShoppingCartIcon className='shopping-cart-icon' />
             </Box>
           </Stack>
