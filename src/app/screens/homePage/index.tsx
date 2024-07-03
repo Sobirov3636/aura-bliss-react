@@ -13,6 +13,7 @@ import { Product } from "../../../lib/types/product";
 import { setBestSellers, setNewArrivals } from "./store";
 import { ProductCategory } from "../../../lib/enums/product.enum";
 import ProductService from "../../services/ProductService";
+import { CartItem } from "../../../lib/types/search";
 
 /** REDUX SLICE & SELECTOR **/
 const actionDispatch = (dispatch: Dispatch) => ({
@@ -20,7 +21,12 @@ const actionDispatch = (dispatch: Dispatch) => ({
   setNewArrivals: (data: Product[]) => dispatch(setNewArrivals(data)),
 });
 
-function HomePage() {
+interface HomePageProps {
+  onAdd: (item: CartItem) => void;
+}
+
+function HomePage(props: HomePageProps) {
+  const { onAdd } = props;
   const { setBestSellers, setNewArrivals } = actionDispatch(useDispatch());
 
   useEffect(() => {
@@ -53,10 +59,10 @@ function HomePage() {
   }, []);
   return (
     <div className='homepage'>
-      <BestSellers />
+      <BestSellers onAdd={onAdd} />
       <ProductCategories />
       <Advertisement />
-      <NewArrivals />
+      <NewArrivals onAdd={onAdd} />
       <Events />
     </div>
   );

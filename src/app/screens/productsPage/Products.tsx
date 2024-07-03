@@ -39,6 +39,7 @@ import ProductService from "../../services/ProductService";
 import { serverApi } from "../../../lib/config";
 import { ProductBrand, ProductCategory, ProductTargetUser } from "../../../lib/enums/product.enum";
 import { useHistory } from "react-router-dom";
+import { CartItem } from "../../../lib/types/search";
 
 /** REDUX SLICE & SELECTOR **/
 const actionDispatch = (dispatch: Dispatch) => ({
@@ -46,7 +47,12 @@ const actionDispatch = (dispatch: Dispatch) => ({
 });
 const productsRetriever = createSelector(retrieveProducts, (products) => ({ products }));
 
-function Products() {
+interface ProductsProps {
+  onAdd: (item: CartItem) => void;
+}
+
+function Products(props: ProductsProps) {
+  const { onAdd } = props;
   const { setProducts } = actionDispatch(useDispatch());
   const { products } = useSelector(productsRetriever);
   const [productSearch, setProductSearch] = useState<ProductInquery>({
@@ -255,6 +261,7 @@ function Products() {
                         product={product}
                         key={product?._id}
                         chooseProductHandler={() => chooseProductHandler(product?._id)}
+                        onAdd={onAdd}
                       />
                     ))}
                   </CssVarsProvider>

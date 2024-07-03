@@ -18,6 +18,7 @@ import { serverApi } from "../../../lib/config";
 import { ProductCategory } from "../../../lib/enums/product.enum";
 import ProductCard from "../../components/ProductCard";
 import { useHistory } from "react-router-dom";
+import { CartItem } from "../../../lib/types/search";
 
 /** REDUX SLICE & SELECTOR **/
 
@@ -30,7 +31,12 @@ const bestSellers = [
   { name: "Dr Vita", image: "/img/suncream5.jpeg" },
 ];
 
-function BestSellers() {
+interface BestSellersProps {
+  onAdd: (item: CartItem) => void;
+}
+
+function BestSellers(props: BestSellersProps) {
+  const { onAdd } = props;
   const { bestSellers } = useSelector(bestSellersRetriever);
   const history = useHistory();
   const chooseProductHandler = (id: string) => {
@@ -47,7 +53,12 @@ function BestSellers() {
                 {/* Render best sellers */}
                 {bestSellers.map((product) => {
                   return (
-                    <ProductCard product={product} chooseProductHandler={chooseProductHandler} key={product._id} />
+                    <ProductCard
+                      product={product}
+                      chooseProductHandler={chooseProductHandler}
+                      key={product._id}
+                      onAdd={onAdd}
+                    />
                     // <Card className='card'>
                     //   <CardOverflow>
                     //     <AspectRatio variant='soft' ratio='4/5' sx={{ minWidth: 200 }}>

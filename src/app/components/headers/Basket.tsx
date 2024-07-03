@@ -8,9 +8,15 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { CartItem } from "../../../lib/types/search";
+import { serverApi } from "../../../lib/config";
 
-const cartItems = [{ name: "test" }];
-export default function Basket() {
+interface BasketProps {
+  cartItems: CartItem[];
+}
+export default function Basket(props: BasketProps) {
+  const { cartItems } = props;
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -33,7 +39,7 @@ export default function Basket() {
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
       >
-        <Badge badgeContent={3} color='secondary'>
+        <Badge badgeContent={cartItems.length} color='secondary'>
           <ShoppingCartIcon className='shopping-cart' />
         </Badge>
       </IconButton>
@@ -64,64 +70,31 @@ export default function Basket() {
               </TableHead>
 
               {/* BODY */}
-              <TableBody className='table-body'>
-                <TableRow sx={{ height: "45px" }}>
-                  <TableCell>
-                    {" "}
-                    <img className='product-img' src='/img/suncreem2.jpeg' alt='' />
-                  </TableCell>
-                  <TableCell sx={{ fontSize: "17px", padding: "6px 20px" }}>Suncream</TableCell>
-                  <TableCell sx={{ fontSize: "15px", padding: "6px 25px" }}>
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <KeyboardArrowLeftIcon sx={{ width: "30px", height: "30px", cursor: "pointer" }} />
-                      <span style={{ margin: "0 5px", fontSize: "17px" }}>2</span>
-                      <KeyboardArrowRightIcon sx={{ width: "30px", height: "30px", cursor: "pointer" }} />
-                    </div>
-                  </TableCell>
-                  <TableCell sx={{ fontSize: "17px", padding: "6px 35px" }}> $ 2</TableCell>
-                  <TableCell sx={{ fontSize: "17px", padding: "6px 50px" }}>
-                    <CancelIcon color={"primary"} sx={{ cursor: "pointer" }} />
-                  </TableCell>
-                </TableRow>
-
-                <TableRow sx={{ height: "45px" }}>
-                  <TableCell>
-                    {" "}
-                    <img className='product-img' src='/img/parfumeadras.jpeg' alt='' />
-                  </TableCell>
-                  <TableCell sx={{ fontSize: "17px", padding: "6px 20px" }}>Parfume</TableCell>
-                  <TableCell sx={{ fontSize: "15px", padding: "6px 25px" }}>
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <KeyboardArrowLeftIcon sx={{ width: "30px", height: "30px", cursor: "pointer" }} />
-                      <span style={{ margin: "0 5px", fontSize: "17px" }}>1</span>
-                      <KeyboardArrowRightIcon sx={{ width: "30px", height: "30px", cursor: "pointer" }} />
-                    </div>
-                  </TableCell>
-                  <TableCell sx={{ fontSize: "17px", padding: "6px 35px" }}> $ 10</TableCell>
-                  <TableCell sx={{ fontSize: "17px", padding: "6px 50px" }}>
-                    <CancelIcon color={"primary"} sx={{ cursor: "pointer" }} />
-                  </TableCell>
-                </TableRow>
-
-                <TableRow sx={{ height: "45px" }}>
-                  <TableCell>
-                    {" "}
-                    <img className='product-img' src='/img/parfumeadras.jpeg' alt='' />
-                  </TableCell>
-                  <TableCell sx={{ fontSize: "17px", padding: "6px 20px" }}>Parfume</TableCell>
-                  <TableCell sx={{ fontSize: "15px", padding: "6px 25px" }}>
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <KeyboardArrowLeftIcon sx={{ width: "30px", height: "30px", cursor: "pointer" }} />
-                      <span style={{ margin: "0 5px", fontSize: "17px" }}>1</span>
-                      <KeyboardArrowRightIcon sx={{ width: "30px", height: "30px", cursor: "pointer" }} />
-                    </div>
-                  </TableCell>
-                  <TableCell sx={{ fontSize: "17px", padding: "6px 35px" }}> $ 10</TableCell>
-                  <TableCell sx={{ fontSize: "17px", padding: "6px 50px" }}>
-                    <CancelIcon color={"primary"} sx={{ cursor: "pointer" }} />
-                  </TableCell>
-                </TableRow>
-              </TableBody>
+              {cartItems.map((item: CartItem) => {
+                const imagePath = `${serverApi}/${item.image}`;
+                return (
+                  <TableBody className='table-body'>
+                    <TableRow sx={{ height: "45px" }}>
+                      <TableCell>
+                        {" "}
+                        <img className='product-img' src={imagePath} alt='' />
+                      </TableCell>
+                      <TableCell sx={{ fontSize: "17px", padding: "6px 20px" }}>{item.name}</TableCell>
+                      <TableCell sx={{ fontSize: "15px", padding: "6px 25px" }}>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <KeyboardArrowLeftIcon sx={{ width: "30px", height: "30px", cursor: "pointer" }} />
+                          <span style={{ margin: "0 5px", fontSize: "17px" }}>{item.quantity}</span>
+                          <KeyboardArrowRightIcon sx={{ width: "30px", height: "30px", cursor: "pointer" }} />
+                        </div>
+                      </TableCell>
+                      <TableCell sx={{ fontSize: "17px", padding: "6px 35px" }}> $ {item.price}</TableCell>
+                      <TableCell sx={{ fontSize: "17px", padding: "6px 50px" }}>
+                        <CancelIcon color={"primary"} sx={{ cursor: "pointer" }} />
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                );
+              })}
             </Table>
           </TableContainer>
 
@@ -133,7 +106,7 @@ export default function Basket() {
               {" "}
               <span style={{ fontWeight: "bold" }}>Total:</span> $100 (98 +2)
             </span>
-            <Button startIcon={<ShoppingCartIcon />} variant={"contained"} color='info'>
+            <Button startIcon={<ShoppingCartIcon />} variant={"contained"} color='secondary'>
               Order
             </Button>
           </Box>

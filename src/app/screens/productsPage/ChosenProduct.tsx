@@ -23,6 +23,7 @@ import { Member } from "../../../lib/types/member";
 import { useHistory, useParams } from "react-router-dom";
 import { serverApi } from "../../../lib/config";
 import ProductService from "../../services/ProductService";
+import { CartItem } from "../../../lib/types/search";
 
 /** REDUX SLICE & SELECTOR **/
 const actionDispatch = (dispatch: Dispatch) => ({
@@ -43,7 +44,12 @@ const products = [
   { name: "Wisteria", image: "/img/sunscren1.jpeg" },
 ];
 
-function ChosenProduct() {
+interface ChosenProductProps {
+  onAdd: (item: CartItem) => void;
+}
+
+function ChosenProduct(props: ChosenProductProps) {
+  const { onAdd } = props;
   const [slideImage, setSlideImage] = useState<string>("");
   const history = useHistory();
 
@@ -159,7 +165,7 @@ function ChosenProduct() {
             >
               {products.map((product, index) => (
                 <SwiperSlide key={index}>
-                  <ProductCard product={product} chooseProductHandler={chooseProductHandler} />
+                  <ProductCard product={product} onAdd={onAdd} chooseProductHandler={chooseProductHandler} />
                 </SwiperSlide>
               ))}
             </Swiper>

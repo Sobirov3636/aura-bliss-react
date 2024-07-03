@@ -24,13 +24,15 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import { Add, Close, Favorite, FavoriteBorder, Home, Remove } from "@mui/icons-material";
 import { serverApi } from "../../lib/config";
+import { CartItem } from "../../lib/types/search";
 
 interface ProductCardProps {
   product: any;
   chooseProductHandler: any;
+  onAdd: (item: CartItem) => void;
 }
 const ProductCard = (props: ProductCardProps) => {
-  const { product, chooseProductHandler } = props;
+  const { product, chooseProductHandler, onAdd } = props;
   // @ts-ignore
   const imagePath =
     product.productImages && product.productImages.length > 0 ? `${serverApi}/${product.productImages[0]}` : "No image";
@@ -96,7 +98,19 @@ const ProductCard = (props: ProductCardProps) => {
               >
                 {product.productVolume}ml
               </Box>
-              <AddShoppingCartIcon className='shopping-cart-icon' />
+              <AddShoppingCartIcon
+                className='shopping-cart-icon'
+                onClick={(e) => {
+                  onAdd({
+                    _id: product._id,
+                    quantity: 1,
+                    name: product.productName,
+                    price: product.productPrice,
+                    image: product.productImages[0],
+                  });
+                  e.stopPropagation();
+                }}
+              />
             </Box>
           </Stack>
         </CardContent>

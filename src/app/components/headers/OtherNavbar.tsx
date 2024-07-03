@@ -2,8 +2,14 @@ import React from "react";
 import { Box, Button, Container, Stack } from "@mui/material";
 import { NavLink, useLocation } from "react-router-dom";
 import Basket from "./Basket";
+import { CartItem } from "../../../lib/types/search";
 
-function OtherNavbar() {
+interface OtherNavbarProps {
+  cartItems: CartItem[];
+}
+
+function OtherNavbar(props: OtherNavbarProps) {
+  const { cartItems } = props;
   const location = useLocation();
   const authMember = null;
   return (
@@ -43,7 +49,7 @@ function OtherNavbar() {
                 Help
               </NavLink>
             </Box>
-            <Basket />
+            <Basket cartItems={cartItems} />
 
             {!authMember ? (
               <Box>
