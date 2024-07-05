@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
-import { Fab, FormControl, InputLabel, MenuItem, Select, Stack, TextField } from "@mui/material";
+import { Box, Button, Fab, FormControl, InputLabel, MenuItem, Select, Stack, TextField } from "@mui/material";
 import styled from "styled-components";
 import LoginIcon from "@mui/icons-material/Login";
 import { Messages } from "../../../lib/config";
@@ -12,6 +12,8 @@ import { LoginInput, MemberInput } from "../../../lib/types/member";
 import { sweetErrorHandling } from "../../../lib/sweetAlert";
 import MemberService from "../../services/MemberService";
 import { MemberGender } from "../../../lib/enums/member.enum";
+import { useGlobals } from "../../hooks/useGlobals";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -41,16 +43,18 @@ interface AuthenticationModalProps {
   loginOpen: boolean;
   handleSignupClose: () => void;
   handleLoginClose: () => void;
+  setSignupOpen: (isOpen: boolean) => void;
 }
 
 export default function AuthenticationModal(props: AuthenticationModalProps) {
-  const { signupOpen, loginOpen, handleSignupClose, handleLoginClose } = props;
+  const { signupOpen, loginOpen, handleSignupClose, handleLoginClose, setSignupOpen } = props;
   const classes = useStyles();
 
   const [memberNick, setMemberNick] = useState<string>("");
   const [memberPhone, setMemberPhone] = useState<string>("");
   const [memberPassword, setMemberPassword] = useState<string>("");
   const [memberGender, setMemberGender] = useState<MemberGender>(MemberGender.WOMEN);
+  const { setAuthMember } = useGlobals();
 
   /** HANDLERS **/
 
@@ -94,7 +98,7 @@ export default function AuthenticationModal(props: AuthenticationModalProps) {
       const member = new MemberService();
       const result = await member.signup(signupInput);
 
-      // Saving Authenticated user
+      setAuthMember(result);
 
       handleSignupClose();
     } catch (err) {
@@ -118,6 +122,8 @@ export default function AuthenticationModal(props: AuthenticationModalProps) {
       const result = await member.login(loginInput);
 
       // Saving Authenticated user
+      setAuthMember(result);
+
       handleLoginClose();
     } catch (err) {
       console.log(err);
@@ -142,7 +148,7 @@ export default function AuthenticationModal(props: AuthenticationModalProps) {
       >
         <Fade in={signupOpen}>
           <Stack className={classes.paper} direction={"row"} sx={{ width: "800px" }}>
-            <ModalImg src={"/img/auth.webp"} alt='camera' />
+            <ModalImg src={"/img/login.jpg"} alt='camera' />
             <Stack sx={{ marginLeft: "69px", alignItems: "center" }}>
               <h2>Signup Form</h2>
               <TextField
@@ -166,13 +172,13 @@ export default function AuthenticationModal(props: AuthenticationModalProps) {
                 onChange={handlePassword}
                 onKeyDown={handlePawwrodKeyDown}
               />
-              <FormControl fullWidth>
-                <InputLabel id='demo-simple-select-label'>Age</InputLabel>
+              <FormControl fullWidth sx={{ marginTop: "20px", border: "none" }}>
+                <InputLabel id='demo-simple-select-label'>Gender</InputLabel>
                 <Select
                   labelId='demo-simple-select-label'
                   id='demo-simple-select'
                   value={memberGender}
-                  label='Age'
+                  label='Gender'
                   onChange={handleMemberGender}
                 >
                   <MenuItem value='WOMEN'>Women</MenuItem>
@@ -207,18 +213,58 @@ export default function AuthenticationModal(props: AuthenticationModalProps) {
       >
         <Fade in={loginOpen}>
           <Stack className={classes.paper} direction={"row"} sx={{ width: "700px" }}>
-            <ModalImg src={"/img/auth.webp"} alt='camera' />
+            <Stack>
+              <ModalImg style={{ width: "90%" }} src={"/img/login.jpg"} alt='camera' />
+
+              <p style={{ marginLeft: "10px" }}>
+                Not registerd yet?{" "}
+                <Button
+                  variant='contained'
+                  color='secondary'
+                  size='small'
+                  sx={{ borderRadius: "100px" }}
+                  onClick={() => {
+                    setSignupOpen(true);
+                    handleLoginClose();
+                  }}
+                >
+                  Signup
+                </Button>
+              </p>
+            </Stack>
             <Stack
               sx={{
-                marginLeft: "65px",
+                marginLeft: "40px",
                 marginTop: "25px",
+                marginRight: "15px",
                 alignItems: "center",
               }}
             >
               <h2>Login Form</h2>
-              <TextField id='outlined-basic' label='username' variant='outlined' sx={{ my: "10px" }} />
-              <TextField id={"outlined-basic"} label={"password"} variant={"outlined"} type={"password"} />
-              <Fab sx={{ marginTop: "27px", width: "120px" }} variant={"extended"} color={"primary"}>
+
+              <TextField
+                id='outlined-basic'
+                label='username'
+                variant='outlined'
+                sx={{ my: "10px" }}
+                onChange={handleUsername}
+              />
+
+              <TextField
+                id={"outlined-basic"}
+                label={"password"}
+                variant={"outlined"}
+                type={"password"}
+                onChange={handlePassword}
+                onKeyDown={handlePawwrodKeyDown}
+              />
+
+              <Fab
+                sx={{ marginTop: "27px", width: "120px" }}
+                variant={"extended"}
+                color={"primary"}
+                onClick={handleLoginRequest}
+              >
                 <LoginIcon sx={{ mr: 1 }} />
                 Login
               </Fab>
