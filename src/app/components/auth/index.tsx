@@ -8,7 +8,7 @@ import styled from "styled-components";
 import LoginIcon from "@mui/icons-material/Login";
 import { Messages } from "../../../lib/config";
 import { T } from "../../../lib/types/common";
-import { MemberInput } from "../../../lib/types/member";
+import { LoginInput, MemberInput } from "../../../lib/types/member";
 import { sweetErrorHandling } from "../../../lib/sweetAlert";
 import MemberService from "../../services/MemberService";
 import { MemberGender } from "../../../lib/enums/member.enum";
@@ -73,6 +73,8 @@ export default function AuthenticationModal(props: AuthenticationModalProps) {
   const handlePawwrodKeyDown = (e: T) => {
     if (e.key === "Enter" && signupOpen) {
       handleSignupRequest().then();
+    } else if (e.key === "Enter" && loginOpen) {
+      handleLoginRequest().then();
     }
   };
 
@@ -92,10 +94,34 @@ export default function AuthenticationModal(props: AuthenticationModalProps) {
       const member = new MemberService();
       const result = await member.signup(signupInput);
 
+      // Saving Authenticated user
+
       handleSignupClose();
     } catch (err) {
       console.log(err);
       handleSignupClose();
+      sweetErrorHandling(err).then();
+    }
+  };
+
+  const handleLoginRequest = async () => {
+    try {
+      const isFullfill = memberNick !== "" && memberPassword !== "";
+      if (!isFullfill) throw new Error(Messages.error3);
+
+      const loginInput: LoginInput = {
+        memberNick,
+        memberPassword,
+      };
+
+      const member = new MemberService();
+      const result = await member.login(loginInput);
+
+      // Saving Authenticated user
+      handleLoginClose();
+    } catch (err) {
+      console.log(err);
+      handleLoginClose();
       sweetErrorHandling(err).then();
     }
   };
