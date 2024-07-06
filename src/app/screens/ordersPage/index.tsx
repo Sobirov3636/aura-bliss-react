@@ -15,6 +15,7 @@ import "../../../css/order.css";
 import OrderService from "../../services/OrdersService";
 import { OrderStatus } from "../../../lib/enums/order.enum";
 import { useGlobals } from "../../hooks/useGlobals";
+import { useHistory } from "react-router-dom";
 
 /** REDUX SLICE & SELECTOR */
 const actionDispatch = (dispatch: Dispatch) => ({
@@ -25,7 +26,8 @@ const actionDispatch = (dispatch: Dispatch) => ({
 
 function OrdersPage() {
   const { setPausedOrders, setProcessOrders, setFinishedOrders } = actionDispatch(useDispatch());
-  const { orderBuilder } = useGlobals();
+  const history = useHistory();
+  const { orderBuilder, authMember } = useGlobals();
   const [value, setValue] = useState("1");
   const [orderInquery, setOrderInquery] = useState<OrderInquery>({
     page: 1,
@@ -54,6 +56,8 @@ function OrdersPage() {
   const handleChange = (e: SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
+
+  if (!authMember) history.push("/");
 
   return (
     <div className={"order-page"}>
