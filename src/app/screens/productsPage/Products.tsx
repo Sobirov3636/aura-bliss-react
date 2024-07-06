@@ -38,13 +38,16 @@ import { retrieveProducts } from "./selector";
 import ProductService from "../../services/ProductService";
 import { serverApi } from "../../../lib/config";
 import { ProductBrand, ProductCategory, ProductTargetUser } from "../../../lib/enums/product.enum";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { CartItem } from "../../../lib/types/search";
 
 /** REDUX SLICE & SELECTOR **/
 const actionDispatch = (dispatch: Dispatch) => ({
   setProducts: (data: Product[]) => dispatch(setProducts(data)),
 });
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 export const productsRetriever = createSelector(retrieveProducts, (products) => ({ products }));
 
 interface ProductsProps {
@@ -61,15 +64,14 @@ function Products(props: ProductsProps) {
     order: "createdAt",
     search: "",
   });
-
   const [searchText, setSearchText] = useState<string>("");
-
   const history = useHistory();
+  const query = useQuery();
 
   useEffect(() => {
-    const product = new ProductService();
-    product
-      .getProducts(productSearch)
+    const productService = new ProductService();
+    productService
+      .getProducts({ ...productSearch })
       .then((data) => setProducts(data))
       .catch((err) => console.log(err));
   }, [productSearch]);

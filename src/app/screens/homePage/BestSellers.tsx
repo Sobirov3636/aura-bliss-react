@@ -55,7 +55,7 @@ function BestSellers(props: BestSellersProps) {
                   return (
                     <ProductCard
                       product={product}
-                      chooseProductHandler={chooseProductHandler}
+                      chooseProductHandler={() => chooseProductHandler(product?._id)}
                       key={product._id}
                       onAdd={onAdd}
                     />

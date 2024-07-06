@@ -43,7 +43,7 @@ function NewArrivals(props: NewArrivalsProps) {
                 {newArrivals.map((product) => (
                   <ProductCard
                     product={product}
-                    chooseProductHandler={chooseProductHandler}
+                    chooseProductHandler={() => chooseProductHandler(product?._id)}
                     onAdd={onAdd}
                     key={product._id}
                   />

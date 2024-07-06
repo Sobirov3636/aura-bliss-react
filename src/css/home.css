@@ -43,6 +43,7 @@
   background-color: #f0e6ea;
   border: none;
   position: relative;
+  transition: all 0.25s linear;
 }
 
 .homepage .best-sellers-frame .cards-frame .card:hover {
