@@ -16,6 +16,7 @@ import OrderService from "../../services/OrdersService";
 import { OrderStatus } from "../../../lib/enums/order.enum";
 import { useGlobals } from "../../hooks/useGlobals";
 import { useHistory } from "react-router-dom";
+import { serverApi } from "../../../lib/config";
 
 /** REDUX SLICE & SELECTOR */
 const actionDispatch = (dispatch: Dispatch) => ({
@@ -85,20 +86,26 @@ function OrdersPage() {
           <Box className={"order-info-box"}>
             <Box className={"member-box"}>
               <div className={"order-user-img"}>
-                <img alt='' src={"/icons/default-user.svg"} className={"order-user-avatar"} />
+                <img
+                  alt=''
+                  src={authMember?.memberImage ? `${serverApi}/${authMember.memberImage}` : "/icons/default-user.svg"}
+                  className={"order-user-avatar"}
+                />
                 <div className={"order-user-icon-box"}>
                   <img alt='' src={"/icons/user-badge.svg"} className={"order-user-prof-img"} />
                 </div>
               </div>
-              <span className={"order-user-name"}>Ali</span>
-              <span className={"order-user-prof"}>User</span>
+              <span className={"order-user-name"}>{authMember?.memberNick}</span>
+              <span className={"order-user-prof"}>{authMember?.memberType}</span>
             </Box>
             <Box className={"liner"}></Box>
             <Box className={"order-user-address"}>
               <div style={{ display: "flex" }}>
                 <LocationOnIcon />
               </div>
-              <div className={"spec-address-txt"}>Do not exist</div>
+              <div className={"spec-address-txt"}>
+                {authMember?.memberAddress ? authMember.memberAddress : "Do not exist adress"}
+              </div>
             </Box>
           </Box>
           <Box className={"order-info-box"} sx={{ mt: "15px" }}>
