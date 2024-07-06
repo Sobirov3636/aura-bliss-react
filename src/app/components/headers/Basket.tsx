@@ -145,7 +145,12 @@ export default function Basket(props: BasketProps) {
                 {" "}
                 <span style={{ fontWeight: "bold" }}>Total:</span> {totalPrice} ({itemsPrice} + {shippingCost})
               </span>
-              <Button startIcon={<ShoppingCartIcon />} variant={"contained"} color='secondary'>
+              <Button
+                onClick={proceedOrderHandler}
+                startIcon={<ShoppingCartIcon />}
+                variant={"contained"}
+                color='secondary'
+              >
                 Order
               </Button>
             </Box>
