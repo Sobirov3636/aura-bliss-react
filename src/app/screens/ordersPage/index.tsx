@@ -14,6 +14,7 @@ import { Order, OrderInquery } from "../../../lib/types/order";
 import "../../../css/order.css";
 import OrderService from "../../services/OrdersService";
 import { OrderStatus } from "../../../lib/enums/order.enum";
+import { useGlobals } from "../../hooks/useGlobals";
 
 /** REDUX SLICE & SELECTOR */
 const actionDispatch = (dispatch: Dispatch) => ({
@@ -24,6 +25,7 @@ const actionDispatch = (dispatch: Dispatch) => ({
 
 function OrdersPage() {
   const { setPausedOrders, setProcessOrders, setFinishedOrders } = actionDispatch(useDispatch());
+  const { orderBuilder } = useGlobals();
   const [value, setValue] = useState("1");
   const [orderInquery, setOrderInquery] = useState<OrderInquery>({
     page: 1,
@@ -47,7 +49,7 @@ function OrdersPage() {
       .getMyOrders({ ...orderInquery, orderStatus: OrderStatus.FINISH })
       .then((data) => setFinishedOrders(data))
       .catch((err) => console.log(err));
-  }, [orderInquery]);
+  }, [orderInquery, orderBuilder]);
 
   const handleChange = (e: SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -68,8 +70,8 @@ function OrdersPage() {
               </Box>
             </Box>
             <Stack className={"order-main-content"}>
-              <PausedOrders />
-              <ProcessOrders />
+              <PausedOrders setValue={setValue} />
+              <ProcessOrders setValue={setValue} />
               <FinishedOrders />
             </Stack>
           </TabContext>

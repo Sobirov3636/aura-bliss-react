@@ -10,18 +10,17 @@ import HomePage from "./screens/homePage";
 import Footer from "./components/footer";
 import HomeNavbar from "./components/headers/HomeNavbar";
 import OtherNavbar from "./components/headers/OtherNavbar";
-import "../css/app.css";
-import "../css/navbar.css";
-import "../css/footer.css";
-import "../css/home.css";
-import "../css/product.css";
-import { CartItem } from "../lib/types/search";
 import useBasket from "./hooks/useBasket";
 import AuthenticationModal from "./components/auth";
 import { useGlobals } from "./hooks/useGlobals";
 import MemberService from "./services/MemberService";
 import { sweetErrorHandling, sweetTopSuccessAlert } from "../lib/sweetAlert";
 import { Messages } from "../lib/config";
+import "../css/app.css";
+import "../css/navbar.css";
+import "../css/footer.css";
+import "../css/home.css";
+import "../css/product.css";
 
 function App() {
   const location = useLocation();
