@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, Container, Divider, Rating, Stack, useTheme } from "@mui/material";
-import { Add, Close, Favorite, FavoriteBorder, Home, Remove } from "@mui/icons-material";
+import { Add, Favorite, Remove } from "@mui/icons-material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -10,28 +10,29 @@ import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 // import required modules
-import { FreeMode, Navigation, Thumbs } from "swiper";
-import { CssVarsProvider } from "@mui/joy";
+import { Navigation } from "swiper";
 import ProductCard from "../../components/ProductCard";
 import { Dispatch } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import { setChosenProduct, setProducts } from "./slice";
-import { Product } from "../../../lib/types/product";
+import { Product, ProductInquery } from "../../../lib/types/product";
 import { createSelector } from "reselect";
 import { retrieveChosenProduct, retrieveProducts } from "./selector";
-import { Member } from "../../../lib/types/member";
 import { useHistory, useParams } from "react-router-dom";
 import { serverApi } from "../../../lib/config";
 import ProductService from "../../services/ProductService";
 import { CartItem } from "../../../lib/types/search";
-import { productsRetriever } from "./Products";
 
 /** REDUX SLICE & SELECTOR **/
-const actionDispatch = (dispatch: Dispatch) => ({
+const actionDispatchChosenProduct = (dispatch: Dispatch) => ({
   setChosenProduct: (data: Product) => dispatch(setChosenProduct(data)),
+});
+const actionDispatchProducts = (dispatch: Dispatch) => ({
+  setProducts: (data: Product[]) => dispatch(setProducts(data)),
 });
 
 const chosenProductRetriever = createSelector(retrieveChosenProduct, (chosenProduct) => ({ chosenProduct }));
+const productsRetriever = createSelector(retrieveProducts, (products) => ({ products }));
 
 interface ChosenProductProps {
   onAdd: (item: CartItem) => void;
@@ -46,10 +47,18 @@ function ChosenProduct(props: ChosenProductProps) {
   const [quantity, setQuantity] = useState<number>(1);
   const history = useHistory();
   const { productId } = useParams<{ productId: string }>();
-  const { setChosenProduct } = actionDispatch(useDispatch());
+  const { setChosenProduct } = actionDispatchChosenProduct(useDispatch());
+  const { setProducts } = actionDispatchProducts(useDispatch());
   const { chosenProduct } = useSelector(chosenProductRetriever);
+  const [productSearch, setProductSearch] = useState<ProductInquery>({
+    page: 1,
+    limit: 9,
+    order: "createdAt",
+    productCategory: chosenProduct?.productCategory,
+    search: "",
+  });
+  console.log("testt:", chosenProduct?.productCategory);
   const { products } = useSelector(productsRetriever);
-  console.log("productssss:::", products);
 
   useEffect(() => {
     const product = new ProductService();
@@ -60,7 +69,24 @@ function ChosenProduct(props: ChosenProductProps) {
         setSlideImage(data.productImages[0]);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [productId]);
+
+  useEffect(() => {
+    if (chosenProduct) {
+      setProductSearch((prevState) => ({
+        ...prevState,
+        productCategory: chosenProduct.productCategory,
+      }));
+    }
+  }, [chosenProduct]);
+
+  useEffect(() => {
+    const product = new ProductService();
+    product
+      .getProducts(productSearch)
+      .then((data) => setProducts(data))
+      .catch((err) => console.log(err));
+  }, [productSearch]);
 
   if (!chosenProduct) return null;
 
@@ -71,7 +97,7 @@ function ChosenProduct(props: ChosenProductProps) {
     setSlideImage(image);
   };
   const chooseProductHandler = (id: string) => {
-    history.push(`/products/${id}`);
+    window.location.href = `/products/${id}`;
   };
 
   return (
@@ -172,7 +198,11 @@ function ChosenProduct(props: ChosenProductProps) {
             >
               {products.map((product, index) => (
                 <SwiperSlide key={index}>
-                  <ProductCard product={product} onAdd={onAdd} chooseProductHandler={chooseProductHandler} />
+                  <ProductCard
+                    product={product}
+                    onAdd={onAdd}
+                    chooseProductHandler={() => chooseProductHandler(product?._id)}
+                  />
                 </SwiperSlide>
               ))}
             </Swiper>
