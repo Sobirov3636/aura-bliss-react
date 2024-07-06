@@ -23,6 +23,7 @@ const actionDispatch = (dispatch: Dispatch) => ({
 });
 
 function OrdersPage() {
+  const { setPausedOrders, setProcessOrders, setFinishedOrders } = actionDispatch(useDispatch());
   const [value, setValue] = useState("1");
   const [orderInquery, setOrderInquery] = useState<OrderInquery>({
     page: 1,
