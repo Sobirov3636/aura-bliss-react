@@ -9,7 +9,11 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { CartItem } from "../../../lib/types/search";
-import { serverApi } from "../../../lib/config";
+import { Messages, serverApi } from "../../../lib/config";
+import { useGlobals } from "../../hooks/useGlobals";
+import OrderService from "../../services/OrdersService";
+import { sweetErrorHandling } from "../../../lib/sweetAlert";
+import { useHistory } from "react-router-dom";
 
 interface BasketProps {
   cartItems: CartItem[];
@@ -20,6 +24,8 @@ interface BasketProps {
 }
 export default function Basket(props: BasketProps) {
   const { cartItems, onAdd, onRemove, onDelete, onDeleteAll } = props;
+  const { authMember } = useGlobals();
+  const history = useHistory();
 
   const itemsPrice: number = cartItems.reduce((a: number, c: CartItem) => a + c.quantity * c.price, 0);
   const shippingCost: number = itemsPrice < 100 ? 5 : 0;
@@ -35,7 +41,22 @@ export default function Basket(props: BasketProps) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const proceedOrderHandler = async () => {
+    try {
+      handleClose();
+      if (!authMember) throw new Error(Messages.error2);
 
+      const order = new OrderService();
+      await order.createOrder(cartItems);
+      onDeleteAll();
+
+      // REFRESH VIA CONTEXT
+      history.push("/orders");
+    } catch (err) {
+      console.log(err);
+      sweetErrorHandling(err).then();
+    }
+  };
   return (
     <Box className='basket-box'>
       <IconButton
