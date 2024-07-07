@@ -113,7 +113,7 @@
 
 .productspage .products .cards-frame .card {
   height: 450px;
-  min-width: 280px;
+  width: 280px;
   cursor: pointer;
   background-color: #f0e6ea;
   border: none;
@@ -362,7 +362,7 @@
 
 .chosen-product .images .sub-images {
   width: 100%;
-  height: auto;
+  height: 130px;
   flex-direction: row;
   gap: 10px;
 }

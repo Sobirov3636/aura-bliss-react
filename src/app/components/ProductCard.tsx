@@ -41,13 +41,20 @@ const ProductCard = (props: ProductCardProps) => {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 90);
   const isNew = productDate > oneWeekAgo;
+  const truncateDescription = (desc: any, length: number) => {
+    if (desc.length > length) {
+      return desc.substring(0, length) + "...";
+    }
+    return desc;
+  };
+
   return (
     <CssVarsProvider>
       <Card className='card' onClick={chooseProductHandler}>
         <CardOverflow sx={{ position: "relative" }}>
           {isNew && <span className='new'>New</span>}
           {product.productViews > 5 && <span className={`hot ${isNew ? "below-new" : ""}`}>Hot</span>}
-          <AspectRatio variant='soft' ratio='9/10' sx={{ minWidth: 200 }}>
+          <AspectRatio variant='soft' ratio='9/10' sx={{ width: "300px", maxHeight: 312 }}>
             <img className='card-image' style={{ objectFit: "fill" }} src={imagePath} alt='' />
           </AspectRatio>
         </CardOverflow>
@@ -60,17 +67,21 @@ const ProductCard = (props: ProductCardProps) => {
               justifyContent: "space-between",
             }}
           >
-            <Typography className='product-name'>{product.productName}</Typography>
+            {/* <Typography className='product-name'>{product.productName}</Typography> */}
+            <Typography className='product-name'>{truncateDescription(product.productName, 10)}</Typography>
             <Box className='product-view'>
               {product.productViews}
               <VisibilityIcon sx={{ fontSize: 25, marginLeft: "5px" }} />
               <Box sx={{ display: "flex", alignItems: "center", marginLeft: "10px" }}>
-                <p>{0}</p>
+                <p>{5}</p>
                 <Favorite sx={{ color: "red", marginLeft: "5px" }} />
               </Box>
             </Box>
           </Stack>
-          <Typography className='product-desc'>{product.productDesc ?? "No Description"}</Typography>
+          <Typography className='product-desc'>
+            {truncateDescription(product.productDesc ?? "No Description", 30)}
+          </Typography>
+
           <Stack
             sx={{
               display: "flex",

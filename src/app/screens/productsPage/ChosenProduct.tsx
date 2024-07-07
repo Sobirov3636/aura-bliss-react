@@ -106,14 +106,19 @@ function ChosenProduct(props: ChosenProductProps) {
         <Stack sx={{ display: "flex", flexDirection: "row", marginBottom: "200px", gap: "100px" }}>
           <Stack className={"images"}>
             <Stack className={"main-image"}>
-              <img src={slideImage ? `${serverApi}/${slideImage}` : "/img/product/bigImage.png"} alt={"main-image"} />
+              <img
+                src={slideImage ? `${serverApi}/${slideImage}` : "/img/product/bigImage.png"}
+                alt={"main-image"}
+                height={450}
+                width={510}
+              />
             </Stack>
             <Stack className={"sub-images"}>
               {chosenProduct?.productImages.map((subImg: string) => {
                 const imagePath: string = `${serverApi}/${subImg}`;
                 return (
                   <Stack className={"sub-img-box"} onClick={() => changeImageHandler(subImg)} key={subImg}>
-                    <img src={imagePath} alt={"sub-image"} />
+                    <img src={imagePath} alt={"sub-image"} height={120} />
                   </Stack>
                 );
               })}

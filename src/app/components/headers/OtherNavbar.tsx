@@ -84,7 +84,7 @@ function OtherNavbar(props: OtherNavbarProps) {
 
             {!authMember ? (
               <Box>
-                <Button className='login-btn' variant='contained'>
+                <Button className='login-btn' variant='contained' onClick={() => setLoginOpen(true)}>
                   Login
                 </Button>
               </Box>
