@@ -1,12 +1,9 @@
 import React, { useState } from "react";
-import { SearchSharp } from "@mui/icons-material";
+
 import {
   Box,
-  Button,
-  Container,
   Stack,
-  Divider,
-  Pagination,
+
   //   Checkbox,
 } from "@mui/material";
 import AspectRatio from "@mui/joy/AspectRatio";
@@ -16,13 +13,9 @@ import CardOverflow from "@mui/joy/CardOverflow";
 import Typography from "@mui/joy/Typography";
 import { CssVarsProvider } from "@mui/joy/styles";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { Checkbox } from "@mui/joy";
-import SearchIcon from "@mui/icons-material/Search";
-import PaginationItem from "@mui/material/PaginationItem";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import { Add, Close, Favorite, FavoriteBorder, Home, Remove } from "@mui/icons-material";
+import { Favorite } from "@mui/icons-material";
 import { serverApi } from "../../lib/config";
 import { CartItem } from "../../lib/types/search";
 
@@ -39,7 +32,7 @@ const ProductCard = (props: ProductCardProps) => {
 
   const productDate = new Date(product.createdAt);
   const oneWeekAgo = new Date();
-  oneWeekAgo.setDate(oneWeekAgo.getDate() - 90);
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
   const isNew = productDate > oneWeekAgo;
   const truncateDescription = (desc: any, length: number) => {
     if (desc.length > length) {

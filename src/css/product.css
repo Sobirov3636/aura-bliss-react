@@ -574,6 +574,24 @@
   border-radius: 5px;
   background-color: rgb(139, 132, 160);
 }
+.chosen-product .cards-frame .card .hot {
+  position: absolute;
+  padding: 1px 9px;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  color: rgb(255, 255, 255);
+  font-family: Lato;
+  font-weight: 400;
+
+  text-align: center;
+  text-transform: uppercase;
+  border-radius: 5px;
+  background-color: rgb(227, 52, 52);
+}
+.chosen-product .cards-frame .card .hot.below-new {
+  top: 30px;
+}
 .chosen-product .cards-frame .card .card-bottom {
   display: flex;
 }
