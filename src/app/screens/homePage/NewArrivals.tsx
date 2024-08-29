@@ -38,9 +38,9 @@ function NewArrivals(props: NewArrivalsProps) {
         <Stack className='best-section'>
           <Box className='category-title'>New Arrivals</Box>
           <Stack className='cards-frame'>
-            {newArrivals.length !== 0 ? (
+            {newArrivals?.length !== 0 ? (
               <CssVarsProvider>
-                {newArrivals.map((product) => (
+                {newArrivals?.map((product) => (
                   <ProductCard
                     product={product}
                     chooseProductHandler={() => chooseProductHandler(product?._id)}

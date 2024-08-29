@@ -24,13 +24,6 @@ import { CartItem } from "../../../lib/types/search";
 
 const bestSellersRetriever = createSelector(retrieveBestSellers, (bestSellers) => ({ bestSellers }));
 
-const bestSellers = [
-  { name: "Tamburine", image: "/img/tamburine.jpeg" },
-  { name: "Zarkoperfume", image: "/img/zarkoperfume.jpeg" },
-  { name: "Wisteria", image: "/img/sunscren1.jpeg" },
-  { name: "Dr Vita", image: "/img/suncream5.jpeg" },
-];
-
 interface BestSellersProps {
   onAdd: (item: CartItem) => void;
 }
@@ -48,10 +41,10 @@ function BestSellers(props: BestSellersProps) {
         <Stack className='best-section'>
           <Box className='category-title'>Best Sellers</Box>
           <Stack className='cards-frame'>
-            {bestSellers.length !== 0 ? (
+            {bestSellers?.length !== 0 ? (
               <CssVarsProvider>
                 {/* Render best sellers */}
-                {bestSellers.map((product) => {
+                {bestSellers?.map((product) => {
                   return (
                     <ProductCard
                       product={product}
